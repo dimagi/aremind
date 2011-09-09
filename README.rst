@@ -34,13 +34,17 @@ Developer Setup
 
 * The following additional build dependencies::
 
-    sudo apt-get install libxslt1-dev libxml2-dev mercurial
+    sudo apt-get install libxslt1-dev libxml2-dev mercurial python-setuptools python-dev libevent-dev
 
 * Install pip and virtualenv, and make sure virtualenv is up to date, e.g.::
 
-    easy_install pip
-    pip install -U virtualenv
-    pip install -U virtualenvwrapper
+    sudo easy_install pip
+    sudo pip install -U virtualenv
+    sudo pip install -U virtualenvwrapper
+
+* Once virtualenv and virtualenvwrapper are installed, add this command to your .bashrc file and then restart your terminal session: /usr/local/bin/virtualenvwrapper.sh
+
+* If not done yet, install git and setup private/public keys (see http://help.github.com/linux-set-up-git/)
 
 * Install git-flow (see above).
 
@@ -52,6 +56,7 @@ Developer Setup
     git clone git@github.com:dimagi/aremind.git
     cd aremind
     git checkout develop
+    git checkout master
     git flow init # just accept all the default answers
   
 #. Create a Python virtual environment for this project::
@@ -65,9 +70,11 @@ Developer Setup
 
 #. Create local settings file and initialize a development database::
 
+    # ensure that database service is started if not already: (for example, sudo /etc/init.d/postgresql-8.4 start)
     cp localsettings.py.example localsettings.py
     createdb aremind_devel
     ./manage.py syncdb
+    ./manage.py migrate
 
 #. In one terminal, start RapidSMS router::
 
@@ -80,4 +87,5 @@ Developer Setup
 
 #. Open http://localhost:8000 in your web browser and you should see an
    **Installation Successful!** screen.
+
 
