@@ -1,0 +1,214 @@
+[
+    {
+        "pk": 1, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "What is your secret password?", 
+            "error_response": "Invalid password. Please try again."
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "Since yesterday, did you engage in intercourse?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "Did you (or your partner) use a condom during intercourse?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "Between now and tomorrow, do you think you will engage in intercourse?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "Did you remember to take your study pill yesterday?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "In the past week, were you trying to become pregnant (or have your partner become pregnant)?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "decisiontree.question", 
+        "fields": {
+            "text": "In the past week, do you think you could have been infected with HIV?", 
+            "error_response": "Please response 1 for yes and 0 for no."
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "decisiontree.tree", 
+        "fields": {
+            "root_state": 1, 
+            "trigger": "start tree", 
+            "completion_text": "", 
+            "summary": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "validate_password", 
+            "type": "C", 
+            "name": "password", 
+            "description": "Callback function to validate user-specific password"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "1", 
+            "type": "A", 
+            "name": "yes", 
+            "description": "Yes"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "0", 
+            "type": "A", 
+            "name": "no", 
+            "description": "No"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "([1|0])", 
+            "type": "R", 
+            "name": "yes_no", 
+            "description": "Yes or No"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 1, 
+            "name": "ask_password"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 2, 
+            "name": "ask_question1"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 3, 
+            "name": "ask_question2"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 4, 
+            "name": "ask_question3"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 5, 
+            "name": "ask_question4"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 1, 
+            "tags": [], 
+            "current_state": 1, 
+            "next_state": 2
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 2, 
+            "tags": [], 
+            "current_state": 2, 
+            "next_state": 3
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 3, 
+            "tags": [], 
+            "current_state": 2, 
+            "next_state": 4
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 4, 
+            "tags": [], 
+            "current_state": 3, 
+            "next_state": 4
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 4, 
+            "tags": [], 
+            "current_state": 4, 
+            "next_state": 5
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 4, 
+            "tags": [], 
+            "current_state": 5, 
+            "next_state": null
+        }
+    }
+]
+

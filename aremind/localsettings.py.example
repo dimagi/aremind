@@ -25,7 +25,7 @@ INSTALLED_BACKENDS = {
     "tropo": {
         "ENGINE": "rtropo.outgoing",
         'config': {
-            'encoding' : 'UTF-8'
+            'encoding' : 'UTF-8',
             'number': '+1-xxx-yyy-zzzz',
             'messaging_token': 'longhexstring',
             'voice_token': 'anotherlonghexstring',

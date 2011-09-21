@@ -21,6 +21,11 @@ class AdherenceApp(AppBase):
 
     def start(self):
         self.info('started')
+        self.router.get_app('decisiontree').register_custom_transition("validate_password", self.validate_password);
+
+    def validate_password(self, msg):
+        contact = msg.connection.contact
+        return msg.text == contact.pin
 
     def queue_outgoing_messages(self):
         """ generate queued messages for adherence reminders """
