@@ -19,10 +19,20 @@ class AdherenceApp(AppBase):
 
     reminder = _('ARemind:')
 
+    """
+    UW Implementation
+    Added the registration of the validate_password function.
+    """
     def start(self):
         self.info('started')
         self.router.get_app('decisiontree').register_custom_transition("validate_password", self.validate_password);
 
+    """
+    UW Implementation
+    This function validates the user's password, which is required to transition from 
+    the first state in the decisiontree. Returns True if the password in the message 
+    matches the user's expected password, or False if not.
+    """
     def validate_password(self, msg):
         contact = msg.connection.contact
         return msg.text == contact.pin

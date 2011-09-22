@@ -178,6 +178,16 @@ class Patient(models.Model):
                 break
         return days_needed
 
+    """
+    UW Implementation
+    
+    Returns the number of days between the "date_from" parameter and 
+    the "date_enrolled" attribute of this Patient.
+    """
+    def get_days_since_enrollment(self, date_from):
+        num_days = (date_from - self.date_enrolled).days
+        return num_days
+
 
 class PatientPillsTaken(models.Model):
     """# of pills a patient took on a particular date"""

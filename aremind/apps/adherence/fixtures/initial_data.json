@@ -12,7 +12,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "Since yesterday, did you engage in intercourse?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -20,7 +20,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "Did you (or your partner) use a condom during intercourse?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -28,7 +28,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "Between now and tomorrow, do you think you will engage in intercourse?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -36,7 +36,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "Did you remember to take your study pill yesterday?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -44,7 +44,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "In the past week, were you trying to become pregnant (or have your partner become pregnant)?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -52,7 +52,7 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "In the past week, do you think you could have been infected with HIV?", 
-            "error_response": "Please response 1 for yes and 0 for no."
+            "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
     {
@@ -120,7 +120,7 @@
         "fields": {
             "num_retries": null, 
             "question": 2, 
-            "name": "ask_question1"
+            "name": "ask_daily_question1"
         }
     }, 
     {
@@ -129,7 +129,7 @@
         "fields": {
             "num_retries": null, 
             "question": 3, 
-            "name": "ask_question2"
+            "name": "ask_daily_question2"
         }
     }, 
     {
@@ -138,7 +138,7 @@
         "fields": {
             "num_retries": null, 
             "question": 4, 
-            "name": "ask_question3"
+            "name": "ask_daily_question3"
         }
     }, 
     {
@@ -147,7 +147,25 @@
         "fields": {
             "num_retries": null, 
             "question": 5, 
-            "name": "ask_question4"
+            "name": "ask_daily_question4"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 6, 
+            "name": "ask_monthly_question1"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "decisiontree.treestate", 
+        "fields": {
+            "num_retries": null, 
+            "question": 7, 
+            "name": "ask_monthly_question2"
         }
     }, 
     {
@@ -207,6 +225,26 @@
             "answer": 4, 
             "tags": [], 
             "current_state": 5, 
+            "next_state": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 4, 
+            "tags": [], 
+            "current_state": 6, 
+            "next_state": 7
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "decisiontree.transition", 
+        "fields": {
+            "answer": 4, 
+            "tags": [], 
+            "current_state": 7, 
             "next_state": null
         }
     }
