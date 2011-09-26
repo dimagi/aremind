@@ -32,6 +32,10 @@ Developer Setup
 
     sudo apt-get install postgresql python-psycopg2 libpq-dev
 
+* RabbitMQ::
+
+    sudo apt-get install rabbitmq-server
+
 * The following additional build dependencies::
 
     sudo apt-get install libxslt1-dev libxml2-dev mercurial python-setuptools python-dev libevent-dev
@@ -84,6 +88,11 @@ Developer Setup
 #. In another terminal, start the Django development server::
 
     ./manage.py runserver
+
+#. In separate terminals, start celery and celerybeat:
+
+    ./manage.py celeryd
+    ./manage.py celerybeat
 
 #. Open http://localhost:8000 in your web browser and you should see an
    **Installation Successful!** screen.

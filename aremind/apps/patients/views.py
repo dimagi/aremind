@@ -27,6 +27,7 @@ from aremind.apps.patients import models as patients
 from aremind.apps.patients.forms import PatientRemindersForm, PatientOnetimeMessageForm, PillHistoryForm
 from aremind.apps.patients.importer import parse_payload
 
+_ = lambda s: s
 
 logger = logging.getLogger('aremind.apps.patients')
 logger.setLevel(logging.DEBUG)
@@ -66,14 +67,30 @@ def list_patients(request):
 
 @login_required
 def create_edit_patient(request, patient_id=None):
+    new_patient = False
     if patient_id:
         patient = get_object_or_404(patients.Patient, pk=patient_id)
     else:
         patient = patients.Patient()
+        new_patient = True
     if request.method == 'POST':
         form = PatientRemindersForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
+            
+            # If the patient was just added, send a confirmation SMS
+            if new_patient:
+                msg = OutgoingMessage(patient.contact.default_connection, _("Thank you for registering in the study."))
+                router = Router()
+                success = True
+                try:
+                    router.outgoing(msg)
+                except Exception, e:
+                    logger.exception(e)
+                    success = False
+                if not success:
+                    messages.error(request, _("An error occurred when trying to send confirmation SMS"))
+            
             messages.info(request, "Patient info saved.")
             return redirect('patient-list')
     else:

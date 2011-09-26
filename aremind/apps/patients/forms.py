@@ -87,6 +87,8 @@ class PatientRemindersForm(forms.ModelForm):
         self.fields['mobile_number'].widget = FancyPhoneInput()
         self.fields['reminder_time'].widget.attrs.update({'class': 'timepicker'})
         self.fields['reminder_time'].label = 'Daily Survey Time'
+        self.fields['reminder_time'].required = True
+        self.fields['pin'].required = True
         if not (self.instance and self.instance.pk):
             self.initial['subject_number'] = self.generate_new_subject_id()
 
