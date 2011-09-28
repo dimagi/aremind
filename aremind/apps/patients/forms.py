@@ -12,7 +12,7 @@ from aremind.apps.adherence.models import QuerySchedule
 from aremind.apps.adherence.types import *
 from aremind.apps.adherence.lookups import ReminderLookup, FeedLookup, QueryLookup
 from aremind.apps.groups.forms import FancyPhoneInput
-from aremind.apps.groups.validators import validate_phone
+from aremind.apps.groups.validators import validate_phone, validate_unique_phone
 from aremind.apps.groups.utils import normalize_number
 from aremind.apps.patients import models as patients
 
@@ -92,9 +92,18 @@ class PatientRemindersForm(forms.ModelForm):
         if not (self.instance and self.instance.pk):
             self.initial['subject_number'] = self.generate_new_subject_id()
 
+    """
+    UW Kenya Implementation
+    
+    Modified this function to also ensure uniqueness of mobile number.
+    """
     def clean_mobile_number(self):
         mobile_number = normalize_number(self.cleaned_data['mobile_number'])
         validate_phone(mobile_number)
+        if self.instance.contact_id:
+            validate_unique_phone(mobile_number, self.instance.contact_id)
+        else:
+            validate_unique_phone(mobile_number, None)
         return mobile_number
 
     def clean_manual_adherence(self):
@@ -123,7 +132,7 @@ class PatientRemindersForm(forms.ModelForm):
         patient = super(PatientRemindersForm, self).save(commit=False)
         
         #Save contact information for patient
-        if not patient.contact_id:            
+        if not patient.contact_id:
             contact, _ = Contact.objects.get_or_create(name=patient.subject_number)
             patient.contact = contact
         patient.contact.phone = patient.mobile_number
