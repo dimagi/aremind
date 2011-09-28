@@ -2,6 +2,7 @@ import random
 import string
 import datetime
 
+from django.conf import settings
 from django import forms
 from django.forms.models import modelformset_factory
 
@@ -78,9 +79,11 @@ class PatientPayloadUploadForm(forms.ModelForm):
 
 class PatientRemindersForm(forms.ModelForm):
 
+    language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
+
     class Meta(object):
         model = patients.Patient
-        fields = ('subject_number', 'mobile_number', 'pin', 'reminder_time')
+        fields = ('subject_number', 'mobile_number', 'pin', 'reminder_time', 'language')
 
     def __init__(self, *args, **kwargs):
         super(PatientRemindersForm, self).__init__(*args, **kwargs)
@@ -91,6 +94,8 @@ class PatientRemindersForm(forms.ModelForm):
         self.fields['pin'].required = True
         if not (self.instance and self.instance.pk):
             self.initial['subject_number'] = self.generate_new_subject_id()
+        if (self.instance and self.instance.contact_id):
+            self.initial["language"] = self.instance.contact.language
 
     """
     UW Kenya Implementation
@@ -137,6 +142,7 @@ class PatientRemindersForm(forms.ModelForm):
             patient.contact = contact
         patient.contact.phone = patient.mobile_number
         patient.contact.pin = patient.pin
+        patient.contact.language = self.cleaned_data["language"]
         patient.contact.save()
         patient.save()
         
