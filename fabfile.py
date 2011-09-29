@@ -245,7 +245,7 @@ def stop():
 def start():
     """ start server and celery on remote host """
     require('environment', provided_by=('staging', 'demo', 'production'))
-    _supervisor_command('start %(project)s-%(environment)s:*' % env)
+    _supervisor_command('start %(environment)s:*' % env)
 
 
 def servers_start():
