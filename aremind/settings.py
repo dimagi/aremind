@@ -331,14 +331,3 @@ INSTALLED_BACKENDS = {}
 #)
 
 DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call Elizabeth at 617 414 7022 if you need help."
-
-# import local settings if we find them
-try:
-    #try to see if there's an environmental variable set for local_settings
-    import sys, os
-    if os.environ.has_key('LOCALSETTINGS'):
-        localpath = os.path.dirname(os.environ['LOCALSETTINGS'])
-        sys.path.insert(0, localpath)
-    from localsettings import *
-except ImportError:
-    pass

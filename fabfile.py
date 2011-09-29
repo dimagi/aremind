@@ -340,6 +340,10 @@ def upload_apache_conf():
     run('sudo chgrp -R www-data %s' % destination)
     run('sudo chmod -R g+w %s' % destination)
     run('sudo -u %s mv -f %s %s' % (env.sudo_user, destination, enabled))
+    sudo('a2enmod proxy')
+    sudo('a2enmod proxy_http')
+    sudo('rm /etc/apache2/sites-enabled/%(project)s' % env)
+    sudo('ln -s %(services)s/apache/%(environment)s.conf /etc/apache2/sites-enabled/%(project)s' % env)
     apache_reload()
 
 def production_servers_stop():
