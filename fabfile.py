@@ -34,9 +34,9 @@ RSYNC_EXCLUDE = (
     '*.example',
     '*.db',
 )
-env.home = '/home/aremind'
-env.project = 'aremind'
-env.code_repo = 'git://github.com/dimagi/aremind.git'
+env.home = '/home/dev_project'                              #Edit me!
+env.project = 'dev_project'                                 #Edit me!
+env.code_repo = 'git://github.com/dimagi/dev_project.git'   #Edit me!
 
 
 def _setup_path():
@@ -64,39 +64,32 @@ def setup_dirs():
 
 def staging():
     """ use staging environment on remote host"""
-    env.code_branch = 'develop'
-    env.sudo_user = 'aremind'
+    env.code_branch = 'master'
+    env.sudo_user = 'user_project'
     env.environment = 'staging'
     env.server_port = '9002'
-    env.server_name = 'noneset'
+    env.server_name = 'project-staging.dimagi.com'
     env.hosts = ['204.232.206.181']
-    env.settings = '%(project)s.localsettings' % env
+    env.settings = '%(project)s.settings' % env
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
 
 
 def production():
     """ use production environment on remote host"""
-    env.code_branch = 'master'
-    env.sudo_user = 'aremind'
+    env.code_branch = 'prod-master'
+    env.sudo_user = 'user_project'
     env.environment = 'production'
     env.server_port = '9010'
-    env.server_name = 'aremind-production'
-    env.hosts = ['10.84.168.245']
+    env.server_name = 'project-production.dimagi.com'
+    env.hosts = ['10.84.168.98']
     env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
 
-#    env.code_branch = 'master'
-#    env.sudo_user = 'aremind'
-#    env.environment = 'production'
-#    env.hosts = []
-#    raise NotImplementedError()
-
 
 def install_packages():
     """Install packages, given a list of package names"""
-
     require('environment', provided_by=('staging', 'production'))
     packages_file = posixpath.join(PROJECT_ROOT, 'requirements', 'apt-packages.txt')
     with open(packages_file) as f:
@@ -106,7 +99,6 @@ def install_packages():
 
 def upgrade_packages():
     """Bring all the installed packages up to date"""
-
     require('environment', provided_by=('staging', 'production'))
     sudo("apt-get update -y")
     sudo("apt-get upgrade -y")
@@ -114,7 +106,6 @@ def upgrade_packages():
 
 def setup_server():
     """Set up a server for the first time in preparation for deployments."""
-
     require('environment', provided_by=('staging', 'production'))
     upgrade_packages()
     # Install required system packages for deployment, plus some extras
@@ -125,7 +116,6 @@ def setup_server():
     upgrade_packages()
     create_db_user()
     create_db()
-
 
 def create_db_user():
     """Create the Postgres user."""
@@ -147,11 +137,9 @@ def bootstrap():
     sudo('mkdir -p %(root)s' % env, user=env.sudo_user)
     clone_repo()
     setup_dirs()
-    update_services()
     create_virtualenv()
     update_requirements()
-    setup_translation()
-    fix_locale_perms()
+    update_services()
 
 
 def create_virtualenv():
@@ -170,20 +158,27 @@ def clone_repo():
 def deploy():
     """ deploy code to remote host by checking out the latest via git """
     require('root', provided_by=('staging', 'production'))
-    sudo('echo ping!')
+    sudo('echo ping!') #hack/workaround for delayed console response
     if env.environment == 'production':
         if not console.confirm('Are you sure you want to deploy production?',
                                default=False):
             utils.abort('Production deployment aborted.')
     with settings(warn_only=True):
         stop()
-    with cd(env.code_root):
-        sudo('git pull', user=env.sudo_user)
-        sudo('git checkout %(code_branch)s' % env, user=env.sudo_user)
-    #update_requirements()
-    migrate()
-    collectstatic()
-    start()
+    try:
+        with cd(env.code_root):
+            sudo('git checkout %(code_branch)s' % env, user=env.sudo_user)
+            sudo('git pull', user=env.sudo_user)
+            sudo('git submodule init', user=env.sudo_user)
+            sudo('git submodule update', user=env.sudo_user)
+        update_requirements()
+        update_services()
+        migrate()
+        collectstatic()
+        touch()
+    finally:
+        # hopefully bring the server back to life if anything goes wrong
+        start()
 
 
 def update_requirements():
@@ -191,10 +186,20 @@ def update_requirements():
     require('code_root', provided_by=('staging', 'production'))
     requirements = posixpath.join(env.code_root, 'requirements')
     with cd(requirements):
-        cmd = ['sudo -u %s -H pip install' % env.sudo_user]
-        cmd += ['-E %(virtualenv_root)s' % env]
+        cmd = ['pip install']
+        cmd += ['-q -E %(virtualenv_root)s' % env]
         cmd += ['--requirement %s' % posixpath.join(requirements, 'apps.txt')]
-        run(' '.join(cmd))
+        sudo(' '.join(cmd), user=env.sudo_user)
+
+
+def touch():
+    """ touch apache and supervisor conf files to trigger reload. Also calls supervisorctl update to load latest supervisor.conf """
+    require('code_root', provided_by=('staging', 'production'))
+    apache_path = posixpath.join(posixpath.join(env.services, 'apache'), 'apache.conf')
+    supervisor_path = posixpath.join(posixpath.join(env.services, 'supervisor'), 'supervisor.conf')
+    sudo('touch %s' % apache_path, user=env.sudo_user)
+    sudo('touch %s' % supervisor_path, user=env.sudo_user)
+    _supervisor_command('update')
 
 
 def update_services():
@@ -204,7 +209,6 @@ def update_services():
         stop()
     upload_supervisor_conf()
     upload_apache_conf()
-    start()
     netstat_plnt()
 
 
@@ -279,51 +283,31 @@ def collectstatic():
 
 def reset_local_db():
     """ Reset local database from remote host """
-    require('code_root', provided_by=('production', 'staging'))
-    if env.environment == 'production':
-        utils.abort('Local DB reset is for staging environment only')
-    question = 'Are you sure you want to reset your local ' \
-               'database with the %(environment)s database?' % env
-    sys.path.append('.')
-    if not console.confirm(question, default=False):
-        utils.abort('Local database reset aborted.')
-    if env.environment == 'staging':
-        from aremind.settings_staging import DATABASES as remote
-    else:
-        from aremind.settings_production import DATABASES as remote
-    from aremind.localsettings import DATABASES as loc
-    local_db = loc['default']['NAME']
-    remote_db = remote['default']['NAME']
-    with settings(warn_only=True):
-        local('dropdb %s' % local_db)
-    local('createdb %s' % local_db)
-    host = '%s@%s' % (env.user, env.hosts[0])
-    local('ssh -C %s sudo -u aremind pg_dump -Ox %s | psql %s' % (host, remote_db, local_db))
+    raise NotImplementedError
 
+#   Here is some example code for Doing a local_db reset.  Use at your own risk.
 
-def setup_translation():
-    """ Setup the git config for commiting .po files on the server """
-    run('sudo -H -u %s git config --global user.name "aremind Translators"' % env.sudo_user)
-    run('sudo -H -u %s git config --global user.email "aremind-dev@dimagi.com"' % env.sudo_user)
-
-
-def fix_locale_perms():
-    """ Fix the permissions on the locale directory """
-    require('root', provided_by=('staging', 'production'))
-    locale_dir = '%s/aremind/locale/' % env.code_root
-    run('sudo chown -R %s %s' % (env.sudo_user, locale_dir))
-    run('sudo chgrp -R www-data %s' % locale_dir)
-    run('sudo chmod -R g+w %s' % locale_dir)
-
-
-def commit_locale_changes():
-    """ Commit locale changes on the remote server and pull them in locally """
-    fix_locale_perms()
-    with cd(env.code_root):
-        run('sudo -H -u %s git add aremind/locale' % env.sudo_user)
-        run('sudo -H -u %s git commit -m "updating translation"' % env.sudo_user)
-    local('git pull ssh://%s%s' % (env.host, env.code_root))
-
+#    require('code_root', provided_by=('production', 'staging'))
+#    if env.environment == 'production':
+#        utils.abort('Local DB reset is for staging environment only')
+#    question = 'Are you sure you want to reset your local ' \
+#               'database with the %(environment)s database?' % env
+#    sys.path.append('.')
+#    if not console.confirm(question, default=False):
+#        utils.abort('Local database reset aborted.')
+#    if env.environment == 'staging':
+#        from afrims.settings_staging import DATABASES as remote
+#    else:
+#        from afrims.settings_production import DATABASES as remote
+#    from afrims.localsettings import DATABASES as loc
+#    local_db = loc['default']['NAME']
+#    remote_db = remote['default']['NAME']
+#    with settings(warn_only=True):
+#        local('dropdb %s' % local_db)
+#    local('createdb %s' % local_db)
+#    host = '%s@%s' % (env.user, env.hosts[0])
+#    local('ssh -C %s sudo -u aremind pg_dump -Ox %s | psql %s' % (host, remote_db, local_db))
+#    local('ssh -C %s sudo -u afrims pg_dump -Ox %s | psql %s' % (host, remote_db, local_db))
 
 def upload_supervisor_conf():
     """Upload and link Supervisor configuration from the template."""
@@ -338,7 +322,6 @@ def upload_supervisor_conf():
     run('sudo -u %s mv -f %s %s' % (env.sudo_user, destination, enabled))
     _supervisor_command('update')
 
-
 def upload_apache_conf():
     """Upload and link Supervisor configuration from the template."""
     require('environment', provided_by=('staging', 'demo', 'production'))
@@ -352,6 +335,35 @@ def upload_apache_conf():
     run('sudo -u %s mv -f %s %s' % (env.sudo_user, destination, enabled))
     apache_reload()
 
+def production_servers_stop():
+    require('environment', provided_by=('production'))
+    _supervisor_command('stop production-cebu:production-server-cebu')
+    _supervisor_command('stop production-kpp:production-server-kpp')
+
+def production_servers_start():
+    require('environment', provided_by=('production'))
+    _supervisor_command('start production-cebu:production-server-cebu')
+    _supervisor_command('start production-kpp:production-server-kpp')
+
+def production_servers_restart():
+    require('environment', provided_by=('production'))
+    _supervisor_command('restart production-cebu:production-server-cebu')
+    _supervisor_command('restart production-kpp:production-server-kpp')
+
+def production_routers_stop():
+    require('environment', provided_by=('production'))
+    _supervisor_command('stop production-cebu:production-router-cebu')
+    _supervisor_command('stop production-kpp:production-router-kpp')
+
+def production_routers_start():
+    require('environment', provided_by=('production'))
+    _supervisor_command('start production-cebu:production-router-cebu')
+    _supervisor_command('start production-kpp:production-router-kpp')
+
+def production_routers_restart():
+    require('environment', provided_by=('production'))
+    _supervisor_command('restart production-cebu:production-router-cebu')
+    _supervisor_command('restart production-kpp:production-router-kpp')
 
 def _supervisor_command(command):
     require('hosts', provided_by=('staging', 'production'))
