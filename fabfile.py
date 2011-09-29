@@ -70,7 +70,7 @@ def staging():
     env.server_port = '9002'
     env.server_name = 'uwkenya-staging.dimagi.com'
     env.hosts = ['50.57.138.194']
-    env.settings = '%(project)s.settings' % env
+    env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
 
@@ -251,19 +251,19 @@ def start():
 def servers_start():
     ''' Start the gunicorn servers '''
     require('environment', provided_by=('staging', 'demo', 'production'))
-    _supervisor_command('start  %(project)s-%(environment)s:%(project)s-%(environment)s-server' % env)
+    _supervisor_command('start  %(environment)s:%(project)s-server' % env)
 
 
 def servers_stop():
     ''' Stop the gunicorn servers '''
     require('environment', provided_by=('staging', 'demo', 'production'))
-    _supervisor_command('stop  %(project)s-%(environment)s:%(project)s-%(environment)s-server' % env)
+    _supervisor_command('stop  %(environment)s:%(project)s-server' % env)
 
 
 def servers_restart():
     ''' Start the gunicorn servers '''
     require('environment', provided_by=('staging', 'demo', 'production'))
-    _supervisor_command('restart  %(project)s-%(environment)s:%(project)s-%(environment)s-server' % env)
+    _supervisor_command('restart  %(environment)s:%(project)s-server' % env)
 
 
 def migrate():
