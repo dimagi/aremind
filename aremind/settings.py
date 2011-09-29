@@ -203,8 +203,8 @@ LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', 'English'),
-    ('th', 'Thai'),
-    ('tl', 'Filipino'),
+    ('sw', 'Kiswahili'),
+    ('ki', 'Kikuyu'),
 )
 
 TIME_INPUT_FORMATS = ['%H:%M', '%H:%M:%S']

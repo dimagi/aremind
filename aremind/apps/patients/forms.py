@@ -79,11 +79,12 @@ class PatientPayloadUploadForm(forms.ModelForm):
 
 class PatientRemindersForm(forms.ModelForm):
 
+    password = forms.CharField(max_length=20, required=True)
     language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
 
     class Meta(object):
         model = patients.Patient
-        fields = ('subject_number', 'mobile_number', 'pin', 'reminder_time', 'language')
+        fields = ('subject_number', 'mobile_number', 'reminder_time', 'password', 'language')
 
     def __init__(self, *args, **kwargs):
         super(PatientRemindersForm, self).__init__(*args, **kwargs)
@@ -91,11 +92,11 @@ class PatientRemindersForm(forms.ModelForm):
         self.fields['reminder_time'].widget.attrs.update({'class': 'timepicker'})
         self.fields['reminder_time'].label = 'Daily Survey Time'
         self.fields['reminder_time'].required = True
-        self.fields['pin'].required = True
         if not (self.instance and self.instance.pk):
             self.initial['subject_number'] = self.generate_new_subject_id()
         if (self.instance and self.instance.contact_id):
             self.initial["language"] = self.instance.contact.language
+            self.initial["password"] = self.instance.contact.password
 
     """
     UW Kenya Implementation
@@ -141,7 +142,7 @@ class PatientRemindersForm(forms.ModelForm):
             contact, _ = Contact.objects.get_or_create(name=patient.subject_number)
             patient.contact = contact
         patient.contact.phone = patient.mobile_number
-        patient.contact.pin = patient.pin
+        patient.contact.password = self.cleaned_data["password"]
         patient.contact.language = self.cleaned_data["language"]
         patient.contact.save()
         patient.save()

@@ -35,7 +35,7 @@ class AdherenceApp(AppBase):
     """
     def validate_password(self, msg):
         contact = msg.connection.contact
-        return msg.text == contact.pin
+        return msg.text == contact.password
 
     def queue_outgoing_messages(self):
         """ generate queued messages for adherence reminders """
