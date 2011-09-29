@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "django_nose",
     "rosetta",
     "selectable",
-    # "gunicorn",
+    "gunicorn",
     "aremind.apps.groups",
     "aremind.apps.broadcast",
     "aremind.apps.reminders",
