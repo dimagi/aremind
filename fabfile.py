@@ -34,9 +34,9 @@ RSYNC_EXCLUDE = (
     '*.example',
     '*.db',
 )
-env.home = '/home/dev_project'                              #Edit me!
-env.project = 'dev_project'                                 #Edit me!
-env.code_repo = 'git://github.com/dimagi/dev_project.git'   #Edit me!
+env.home = '/home/uwkenya'                              #Edit me!
+env.project = 'aremind'                                 #Edit me!
+env.code_repo = 'https://github.com/dimagi/aremind.git'   #Edit me!
 
 
 def _setup_path():
@@ -64,12 +64,12 @@ def setup_dirs():
 
 def staging():
     """ use staging environment on remote host"""
-    env.code_branch = 'master'
-    env.sudo_user = 'user_project'
+    env.code_branch = 'uw-dev'
+    env.sudo_user = 'uwkenya'
     env.environment = 'staging'
     env.server_port = '9002'
-    env.server_name = 'project-staging.dimagi.com'
-    env.hosts = ['204.232.206.181']
+    env.server_name = 'uwkenya-staging.dimagi.com'
+    env.hosts = ['50.57.138.194']
     env.settings = '%(project)s.settings' % env
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
@@ -187,7 +187,7 @@ def update_requirements():
     requirements = posixpath.join(env.code_root, 'requirements')
     with cd(requirements):
         cmd = ['pip install']
-        cmd += ['-q -E %(virtualenv_root)s' % env]
+        cmd += ['-E %(virtualenv_root)s' % env]
         cmd += ['--requirement %s' % posixpath.join(requirements, 'apps.txt')]
         sudo(' '.join(cmd), user=env.sudo_user)
 
@@ -239,7 +239,7 @@ def netstat_plnt():
 def stop():
     """ stop server and celery on remote host """
     require('environment', provided_by=('staging', 'demo', 'production'))
-    _supervisor_command('stop %(project)s-%(environment)s:*' % env)
+    _supervisor_command('stop %(environment)s:*' % env)
 
 
 def start():
@@ -320,6 +320,13 @@ def upload_supervisor_conf():
     run('sudo chgrp -R www-data %s' % destination)
     run('sudo chmod -R g+w %s' % destination)
     run('sudo -u %s mv -f %s %s' % (env.sudo_user, destination, enabled))
+
+    #update the line in the supervisord config file that points to our supervisor.conf
+    #remove the line if it already exists
+    tmp = posixpath.join('/','var','tmp','supervisord.conf')
+    sudo('sed "/$%s/d" /etc/supervisor/supervisord.conf > %s' % (env.services.replace('/','\/') , tmp))
+    sudo('echo "files = %s/supervisor/*.conf" >> %s' % (env.services, tmp) )
+    sudo('mv /var/tmp/supervisord.conf /etc/supervisor/supervisord.conf')
     _supervisor_command('update')
 
 def upload_apache_conf():
