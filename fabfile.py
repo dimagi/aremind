@@ -81,7 +81,7 @@ def production():
     env.sudo_user = 'user_project'
     env.environment = 'production'
     env.server_port = '9010'
-    env.server_name = 'project-production.dimagi.com'
+    env.server_name = 'uw-production'
     env.hosts = ['10.84.168.98']
     env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)

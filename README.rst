@@ -40,6 +40,16 @@ Developer Setup
 
     sudo apt-get install libxslt1-dev libxml2-dev mercurial python-setuptools python-dev libevent-dev
 
+* CouchDB is required for logging and audit tracking purposes::
+
+    sudo apt-get install couchdb
+
+See
+  http://wiki.apache.org/couchdb/Installing_on_Ubuntu
+for more information about couch.
+
+
+
 * Install pip and virtualenv, and make sure virtualenv is up to date, e.g.::
 
     sudo easy_install pip
@@ -79,6 +89,12 @@ Developer Setup
     createdb aremind_devel
     ./manage.py syncdb
     ./manage.py migrate
+
+#. Update the submodules::
+
+    git submodule init
+    git submodule update
+
 
 #. In one terminal, start RapidSMS router::
 
