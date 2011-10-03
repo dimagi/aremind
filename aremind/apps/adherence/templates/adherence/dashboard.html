@@ -2,13 +2,14 @@
 {% load pagination_tags sorting_tags %}
 
 {% block right %}
+{% comment %}
 <div class='module'>
     <h2>Reminder Schedules</h2>
-    {% comment %}
+    {# comment #}
     {# Disable pagination/sorting for now. Multiple sorting paginators is not supported #}
-    {% autosort reminders %}
-    {% autopaginate reminders 15 %}
-    {% endcomment %}
+    {# autosort reminders #}
+    {# autopaginate reminders 15 #}
+    {# endcomment #}
     <p><a class='button add' title='Add Reminder Schedule' href="{% url adherence-create-reminder %}" >Add reminder schedule...</a></p>
     <table class='sortable pagination patient-adherence'>
         <thead>
@@ -70,7 +71,7 @@
             {% endfor %}
         </tbody>
     </table>
-
+{% endcomment %}
     <h2>Query Schedules</h2>
     {% autosort query_schedules %}
     {% autopaginate query_schedules 15 %}
@@ -98,7 +99,9 @@
             <td>{{ schedule.active|yesno|capfirst }}</td>
             <td class='actions'>
               <a class='button' title='Edit' href='{% url adherence-edit-query-schedule schedule.pk %}'><span class='ui-icon ui-icon-pencil'></span></a>
+              {% comment %}
               <a class='button' title='Force query' href='{% url adherence-force-query-schedule schedule.pk %}'><span class='ui-icon ui-icon-mail-closed'></span></a>
+              {% endcomment %}
               <a class='button' title='Delete' href='{% url adherence-delete-query-schedule schedule.pk %}'><span class='ui-icon ui-icon-closethick'></span></a>    
             </td>
 
