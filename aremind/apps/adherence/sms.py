@@ -82,23 +82,31 @@ def session_listener(session, is_ending):
     connection = session.connection
     patient = Patient.objects.get(contact = connection.contact)
     days_since_enrollment = patient.get_days_since_enrollment(session.start_date.date())
+    survey = aremind.apps.adherence.models.PatientSurvey.find_active(patient, QUERY_TYPE_SMS)
+    completed = aremind.apps.adherence.models.PatientSurvey.STATUS_COMPLETE
+    not_completed = aremind.apps.adherence.models.PatientSurvey.STATUS_NOT_COMPLETED
     
     if is_ending:
-        
-        # Ensure that the current session ended gracefully and that the appropriate number of days have passed to ask monthly questions
-        if not session.canceled and days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS:
-            
-            # If the last tree state asked the final daily question, then it's a daily session that just finished, so ask the monthly questions.
-            # Otherwise, it's a monthly session that just finished, so just let the session end.
-            entries = session.entries
-            last_state_name = entries.order_by("-time")[0].transition.current_state.name
-            if last_state_name == LAST_DAILY_TREESTATE:
-                next_state = TreeState.objects.get(name = "ask_monthly_question1")
-                session.state = next_state
-                session.canceled = None
-                session.save()
+        if session.canceled:
+            survey.completed(not_completed)
+        else:
+            if days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS:
+                # If the last tree state asked the final daily question, then it's a daily session that just finished, so ask the monthly questions.
+                # Otherwise, it's a monthly session that just finished, so just let the session end.
+                entries = session.entries
+                last_state_name = entries.order_by("-time")[0].transition.current_state.name
+                if last_state_name == LAST_DAILY_TREESTATE:
+                    next_state = TreeState.objects.get(name = "ask_monthly_question1")
+                    session.state = next_state
+                    session.canceled = None
+                    session.save()
+                else:
+                    # It's a monthly survey that completed successfully
+                    survey.completed(completed)
+            else:
+                # It's a daily survey that completed successfully
+                survey.completed(completed)
     else:
-        
         # If it's the last day of the survey, deactivate the query schedule so that it won't start again after this day
         if days_since_enrollment >= FINAL_SURVEY_DAY:
             query_schedule = patient.adherence_query_schedules.all()[0]
