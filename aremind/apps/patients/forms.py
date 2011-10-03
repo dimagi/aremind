@@ -81,10 +81,12 @@ class PatientRemindersForm(forms.ModelForm):
 
     password = forms.CharField(max_length=20, required=True)
     language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
+    survey_active = forms.BooleanField(required=False)
+    mobile_network = forms.CharField(max_length=50, required=False)
 
     class Meta(object):
         model = patients.Patient
-        fields = ('subject_number', 'mobile_number', 'reminder_time', 'password', 'language')
+        fields = ('subject_number', 'mobile_number', 'reminder_time', 'password', 'language', 'survey_active', 'mobile_network')
 
     def __init__(self, *args, **kwargs):
         super(PatientRemindersForm, self).__init__(*args, **kwargs)
@@ -94,9 +96,16 @@ class PatientRemindersForm(forms.ModelForm):
         self.fields['reminder_time'].required = True
         if not (self.instance and self.instance.pk):
             self.initial['subject_number'] = self.generate_new_subject_id()
-        if (self.instance and self.instance.contact_id):
-            self.initial["language"] = self.instance.contact.language
-            self.initial["password"] = self.instance.contact.password
+        if self.instance:
+            if self.instance.contact_id:
+                self.initial["language"] = self.instance.contact.language
+                self.initial["password"] = self.instance.contact.password
+                self.initial["mobile_network"] = self.instance.contact.mobile_network
+            if self.instance.pk and self.instance.adherence_query_schedules.count() > 0:
+                self.initial["survey_active"] = self.instance.adherence_query_schedules.all()[0].active
+            else:
+                self.initial["survey_active"] = True
+                self.fields["survey_active"].widget.attrs["disabled"] = "disabled"
 
     """
     UW Kenya Implementation
@@ -144,6 +153,7 @@ class PatientRemindersForm(forms.ModelForm):
         patient.contact.phone = patient.mobile_number
         patient.contact.password = self.cleaned_data["password"]
         patient.contact.language = self.cleaned_data["language"]
+        patient.contact.mobile_network = self.cleaned_data["mobile_network"]
         patient.contact.save()
         patient.save()
         
@@ -162,6 +172,7 @@ class PatientRemindersForm(forms.ModelForm):
         else:
             query_schedule = patient.adherence_query_schedules.all()[0]
             query_schedule.time_of_day = patient.reminder_time
+            query_schedule.active = self.cleaned_data["survey_active"]
             query_schedule.save()
         
         return patient
