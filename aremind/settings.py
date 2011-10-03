@@ -293,10 +293,10 @@ djcelery.setup_loader()
 from celery.schedules import crontab
 
 CELERYBEAT_SCHEDULE = {
-#    "adherence-reminder-scheduler": {
-#        "task": "aremind.apps.adherence.tasks.ReminderSchedulerTask",
-#        "schedule": crontab(),
-#    },
+    "adherence-reminder-scheduler": {
+        "task": "aremind.apps.adherence.tasks.ReminderSchedulerTask",
+        "schedule": crontab(),
+    },
 #    "adherence-update-feeds": {
 #        "task": "aremind.apps.adherence.tasks.FeedUpdatesTask",
 #        "schedule": crontab(minute=15), # Quarter after every hour
@@ -316,6 +316,10 @@ CELERYBEAT_SCHEDULE = {
     "decisiontree-tick": {
         "task": "aremind.apps.adherence.tasks.DecisionTreeTimeoutTask",
         "schedule": crontab(),  # every minute
+    },
+    "uwkenya-email-task": {
+        "task": "aremind.apps.adherence.tasks.UWKenyaEmailReportTask",
+        "schedule": crontab(hour = 0),
     },
 }
 

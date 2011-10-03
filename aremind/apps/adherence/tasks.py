@@ -4,6 +4,7 @@ from celery.registry import tasks
 from threadless_router.router import Router
 
 from aremind.apps.adherence.models import Feed
+from aremind.apps.adherence.app import send_uwkenya_report_email
 
 from decisiontree.models import Session
 
@@ -51,3 +52,16 @@ class DecisionTreeTimeoutTask(Task):
 
 
 tasks.register(DecisionTreeTimeoutTask)
+
+"""
+UW Kenya Implementation
+
+This task is invoked to send the csv report containing the study results.
+"""
+class UWKenyaEmailReportTask(Task):
+    def run(self):
+        logger.critical("Entering UWKenyaEmailReportTask...")
+        send_uwkenya_report_email()
+        logger.critical("Exiting UWKenyaEmailReportTask...")
+
+tasks.register(UWKenyaEmailReportTask)
