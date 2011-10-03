@@ -8,11 +8,12 @@ from django.db.models import Count, Max
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
+from decisiontree.models import Session, Entry, Transition, TreeState
 from aremind.apps.adherence.forms import (ReminderForm, FeedForm, EntryForm,
                                           QueryScheduleForm)
 from aremind.apps.adherence.models import (Reminder, Feed, Entry,
                                            QuerySchedule, PatientSurvey,
-                                           PillsMissed)
+                                           PillsMissed,UWKenyaSurvey)
 from aremind.apps.patients.models import Patient
 
 logger = logging.getLogger('adherence.views')
@@ -169,7 +170,19 @@ def query_results(request):
     context['results'] = PatientSurvey.objects.all().order_by('-last_modified')
     return render(request, 'adherence/query_results_report.html',
                   context)
-    
+
+@login_required
+def uwkenya_results(request):
+    context = {}
+    context['results'] = UWKenyaSurvey.objects.all().order_by('-start_date')
+    return render(request, 'adherence/uwkenya_results_report.html', context)
+
+@login_required
+def uwkenya_results_csv(request):
+    context = {}
+    context['results'] = UWKenyaSurvey.objects.all().order_by('-start_date')
+    return render(request, 'adherence/uwkenya_results_report.csv', context, content_type="application/csv")
+
 @login_required
 def create_edit_query_schedule(request, schedule_id=None):
     if schedule_id:

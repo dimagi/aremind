@@ -293,31 +293,41 @@ djcelery.setup_loader()
 from celery.schedules import crontab
 
 CELERYBEAT_SCHEDULE = {
-    "adherence-reminder-scheduler": {
-        "task": "aremind.apps.adherence.tasks.ReminderSchedulerTask",
-        "schedule": crontab(),
-    },
-    "adherence-update-feeds": {
-        "task": "aremind.apps.adherence.tasks.FeedUpdatesTask",
-        "schedule": crontab(minute=15), # Quarter after every hour
-    },
-    "broadcast-task": {
-        "task": "aremind.apps.broadcast.tasks.BroadcastCronTask",
-        "schedule": crontab(), # every minute
-    },
-    "reminders-scheduler-task": {
-        "task": "aremind.apps.reminders.tasks.ReminderSchedulerTask",
-        "schedule": crontab(), # every minute
-    },
+#    "adherence-reminder-scheduler": {
+#        "task": "aremind.apps.adherence.tasks.ReminderSchedulerTask",
+#        "schedule": crontab(),
+#    },
+#    "adherence-update-feeds": {
+#        "task": "aremind.apps.adherence.tasks.FeedUpdatesTask",
+#        "schedule": crontab(minute=15), # Quarter after every hour
+#    },
+#    "broadcast-task": {
+#        "task": "aremind.apps.broadcast.tasks.BroadcastCronTask",
+#        "schedule": crontab(), # every minute
+#    },
+#    "reminders-scheduler-task": {
+#        "task": "aremind.apps.reminders.tasks.ReminderSchedulerTask",
+#        "schedule": crontab(), # every minute
+#    },
 #    "reminders-email-task": {
 #        "task": "aremind.apps.reminders.tasks.ReminderEmailTask",
 #        "schedule": crontab(hour=12, minute=0),
 #    },
     "decisiontree-tick": {
-        "task": "decisiontree.tasks.PeriodicTask",
+        "task": "aremind.apps.adherence.tasks.DecisionTreeTimeoutTask",
         "schedule": crontab(),  # every minute
     },
 }
+
+# The number of seconds to wait before resending a question in the decisiontree
+DECISIONTREE_TIMEOUT = 890
+
+# The names of the states for which to apply the timeout rule
+DECISIONTREE_TIMEOUT_STATES = ["ask_password"]
+
+# The maximum number of times to apply the timeout rule to a given state
+DECISIONTREE_TIMEOUT_MAX_RETRIES = 2
+
 
 # Store the schedule in the Django database
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
