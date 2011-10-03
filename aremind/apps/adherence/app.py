@@ -14,6 +14,7 @@ from rapidsms.apps.base import AppBase
 from rapidsms.messages import OutgoingMessage
 
 from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule, UWKenyaSurvey
+from aremind.apps.adherence.sms import TRIGGER, session_listener
 
 from aremind.apps.groups.models import Group
 
@@ -33,7 +34,9 @@ class AdherenceApp(AppBase):
     """
     def start(self):
         self.info('started')
-        self.router.get_app('decisiontree').register_custom_transition("validate_password", self.validate_password);
+        decisiontree_app = self.router.get_app("decisiontree")
+        decisiontree_app.register_custom_transition("validate_password", self.validate_password);
+        decisiontree_app.set_session_listener(TRIGGER, session_listener)
 
     """
     UW Implementation

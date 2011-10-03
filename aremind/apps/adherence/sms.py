@@ -5,7 +5,6 @@ import logging
 import re
 
 from django.dispatch import receiver
-from decisiontree.app import session_end_signal
 from decisiontree.models import Question, Answer, Tree, TreeState, Transition
 from threadless_router.base import incoming
 from threadless_router.router import Router
@@ -22,6 +21,7 @@ ANSWER_RE = r".*(\d+).*"
 """UW Implementation - additional constants"""
 DAYS_FOR_MONTHLY_QUESTIONS = [1, 30, 60]
 LAST_DAILY_TREESTATE = "ask_daily_question4"
+FINAL_SURVEY_DAY = 60
 
 
 # In RapidSMS, message translation is done in OutgoingMessage, so no need
@@ -58,41 +58,50 @@ def start_tree_for_all_patients():
     for patient in Patient.objects.all():
         start_tree_for_patient(tree, patient)
 
+
 """
-UW Implementation
+UW Kenya Implementation
 
-This function will be called upon completion of a survey.
+Upon startup of the adherence app, this function is registered with the 
+decisiontree app using function set_session_listener().
 
-If it was a daily survey that was completed, we need to check 
-to see if the appropriate amount of time has passed to ask 
-the monthly questions.
+This function is called at the beginning and end of every decisiontree 
+session. When a session is starting up, we check to see if it's the last 
+day of the study and deactivate the query schedule if so.
 
-If it was the monthly questions that were completed, we can
-let the session end.
+When a session in ending, we do the following:
+    If it was a daily survey that completed, we need to check 
+    to see if it's one of the days where we need to ask the
+    monthly questions.
+
+    If it was the monthly survey that completed, we can let
+    the session end.
 """
-@receiver(session_end_signal)
-def session_end(sender, **kwargs):
-    session = kwargs['session']
-    canceled = kwargs['canceled']
-    message = kwargs['message']
-
+def session_listener(session, is_ending):
     # Lookup the patient and calculate number of days since enrollment
     connection = session.connection
     patient = Patient.objects.get(contact = connection.contact)
     days_since_enrollment = patient.get_days_since_enrollment(session.start_date.date())
-
-    # Ensure that the current session ended gracefully and that the appropriate number of days have passed to ask monthly questions
-    if not canceled and days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS:
+    
+    if is_ending:
         
-        # If the last tree state asked the final daily question, then it's a daily session that just finished, so ask the monthly questions.
-        # Otherwise, it's a monthly session that just finished, so just let the session end.
-        entries = session.entries
-        last_state_name = entries.order_by("-time")[0].transition.current_state.name
-        if last_state_name == LAST_DAILY_TREESTATE:
-            next_state = TreeState.objects.get(name = "ask_monthly_question1")
-            session.state = next_state
-            session.canceled = None
-            session.save()
+        # Ensure that the current session ended gracefully and that the appropriate number of days have passed to ask monthly questions
+        if not session.canceled and days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS:
             
-    return
+            # If the last tree state asked the final daily question, then it's a daily session that just finished, so ask the monthly questions.
+            # Otherwise, it's a monthly session that just finished, so just let the session end.
+            entries = session.entries
+            last_state_name = entries.order_by("-time")[0].transition.current_state.name
+            if last_state_name == LAST_DAILY_TREESTATE:
+                next_state = TreeState.objects.get(name = "ask_monthly_question1")
+                session.state = next_state
+                session.canceled = None
+                session.save()
+    else:
+        
+        # If it's the last day of the survey, deactivate the query schedule so that it won't start again after this day
+        if days_since_enrollment >= FINAL_SURVEY_DAY:
+            query_schedule = patient.adherence_query_schedules.all()[0]
+            query_schedule.active = False
+            query_schedule.save()
 
