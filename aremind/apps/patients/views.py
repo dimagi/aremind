@@ -10,6 +10,7 @@ from django.contrib.sites.models import Site
 from django.core.mail import mail_admins
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
+from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -66,6 +67,7 @@ def list_patients(request):
 
 
 @login_required
+@transaction.commit_on_success
 def create_edit_patient(request, patient_id=None):
     new_patient = False
     if patient_id:
@@ -80,7 +82,7 @@ def create_edit_patient(request, patient_id=None):
             
             # If the patient was just added, send a confirmation SMS
             if new_patient:
-                msg = OutgoingMessage(patient.contact.default_connection, _("Thank you for registering in the study."))
+                msg = OutgoingMessage(patient.contact.default_connection, _("Thank you for joining the study."))
                 router = Router()
                 success = True
                 try:

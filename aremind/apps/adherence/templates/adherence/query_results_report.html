@@ -1,8 +1,9 @@
 {% extends "adherence/base.html" %}
 {% load pagination_tags sorting_tags %}
 
-{% block right %}
-<h1>Adherence Query Results Report</h1>
+{% block content %}
+{{ block.super }}
+<h1>Query Schedule Results Report</h1>
 <div class="module">
 {% autosort results %}
 {% autopaginate results 20 %}

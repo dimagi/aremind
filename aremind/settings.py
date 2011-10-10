@@ -82,7 +82,7 @@ INSTALLED_APPS = [
 RAPIDSMS_TABS = [
 #    ("aremind.apps.broadcast.views.dashboard", "Dashboard"),    
 #    ("aremind.apps.broadcast.views.send_message", "Send a Message"),
-    ("aremind.apps.adherence.views.dashboard", "Adherence"),
+    ("aremind.apps.adherence.views.uwkenya_results", "Reports"),
 #    ("aremind.apps.reminders.views.dashboard", "Appointments"),
     ("aremind.apps.patients.views.list_patients", "Patients"),
 #    ("broadcast-forwarding", "Forwarding"),
@@ -211,7 +211,7 @@ TIME_INPUT_FORMATS = ['%H:%M', '%H:%M:%S']
 
 ROOT_URLCONF = "aremind.urls"
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'Africa/Nairobi'
 
 LOGIN_URL = '/account/login/'
 
@@ -319,12 +319,12 @@ CELERYBEAT_SCHEDULE = {
     },
     "uwkenya-email-task": {
         "task": "aremind.apps.adherence.tasks.UWKenyaEmailReportTask",
-        "schedule": crontab(hour = 0),
+        "schedule": crontab(hour = 7, minute = 0),
     },
 }
 
 # The number of seconds to wait before resending a question in the decisiontree
-DECISIONTREE_TIMEOUT = 890
+DECISIONTREE_TIMEOUT = 290
 
 # The names of the states for which to apply the timeout rule
 DECISIONTREE_TIMEOUT_STATES = ["ask_password"]

@@ -1,7 +1,8 @@
 {% extends "adherence/base.html" %}
 {% load pagination_tags sorting_tags %}
 
-{% block right %}
+{% block content %}
+{{ block.super }}
 <h1>UW Kenya Study Results Report</h1>
 <div class="module">
 {% autosort results %}
@@ -9,9 +10,11 @@
 <table class="pagination sortable adherence-report">
 <thead>
   <tr>
-    <th>{% anchor start_date "Date Survey Began"%}</th>
+    <th style="width: 175px;">{% anchor start_date "Date Survey Began"%}</th>
     <th>{% anchor subject_number "Patient ID"%}</th>
     <th>{% anchor phone "Mobile Number"%}</th>
+    <th>{% anchor mobile_network "Network"%}</th>
+    <th>{% anchor language "Language"%}</th>
     <th>{% anchor daily_question1_response "Daily Question 1"%}</th>
     <th>{% anchor daily_question2_response "Daily Question 2"%}</th>
     <th>{% anchor daily_question3_response "Daily Question 3"%}</th>
@@ -26,6 +29,8 @@
   <td>{{ result.start_date }}</td>
   <td>{{ result.subject_number }}</td>
   <td>{{ result.phone }}</td>
+  <td>{{ result.mobile_network }}</td>
+  <td>{{ result.language }}</td>
   <td>{{ result.daily_question1_response }}</td>
   <td>{{ result.daily_question2_response }}</td>
   <td>{{ result.daily_question3_response }}</td>

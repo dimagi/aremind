@@ -4,14 +4,14 @@
         "model": "decisiontree.question", 
         "fields": {
             "text": "What is your secret password?", 
-            "error_response": "Invalid password. Please try again."
+            "error_response": "You have not entered the correct password. Please try again."
         }
     }, 
     {
         "pk": 2, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Since yesterday, did you engage in intercourse?", 
+            "text": "Thanks. Since yesterday, did you engage in intercourse?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
@@ -19,7 +19,7 @@
         "pk": 3, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Did you (or your partner) use a condom during intercourse?", 
+            "text": "Thanks. Did you (or your partner) use a condom during intercourse?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
@@ -27,7 +27,7 @@
         "pk": 4, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Between now and tomorrow, do you think you will engage in intercourse?", 
+            "text": "Thanks. Between now and tomorrow, do you think you will engage in intercourse?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
@@ -35,7 +35,7 @@
         "pk": 5, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Did you remember to take your study pill yesterday?", 
+            "text": "Thanks. Did you remember to take your study pill yesterday?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
@@ -43,7 +43,7 @@
         "pk": 6, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "In the past week, were you trying to become pregnant (or have your partner become pregnant)?", 
+            "text": "Thanks. In the past month, were you trying to become pregnant (or have your partner become pregnant)?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 
@@ -51,7 +51,7 @@
         "pk": 7, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "In the past week, do you think you could have been infected with HIV?", 
+            "text": "Thanks. In the past week, do you think you could have been infected with HIV?", 
             "error_response": "Please respond 1 for yes and 0 for no."
         }
     }, 

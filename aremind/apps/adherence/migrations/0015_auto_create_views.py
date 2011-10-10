@@ -28,6 +28,9 @@ class Migration(SchemaMigration):
                            ,A.start_date
                            ,D.subject_number
                            ,C.phone
+                           ,C.language
+                           ,C.mobile_network
+                           ,K.text AS ask_password_response
                            ,E.text AS daily_question1_response
                            ,F.text AS daily_question2_response
                            ,G.text AS daily_question3_response
@@ -44,6 +47,7 @@ class Migration(SchemaMigration):
             LEFT OUTER JOIN decisiontree_entry_treestate H          ON  A.id = H.session_id AND H.name = 'ask_daily_question4'
             LEFT OUTER JOIN decisiontree_entry_treestate I          ON  A.id = I.session_id AND I.name = 'ask_monthly_question1'
             LEFT OUTER JOIN decisiontree_entry_treestate J          ON  A.id = J.session_id AND J.name = 'ask_monthly_question2'
+            LEFT OUTER JOIN decisiontree_entry_treestate K          ON  A.id = K.session_id AND K.name = 'ask_password'
         """)
 
 
@@ -140,6 +144,9 @@ class Migration(SchemaMigration):
             'start_date': ('django.db.models.fields.DateTimeField', [], {}),
             'subject_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
+            'language': ('django.db.models.fields.CharField', [], {'max_length': '6', 'null': 'True', 'blank': 'True'}),
+            'mobile_network': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'ask_password_response': ('django.db.models.fields.CharField', [], {'max_length': '160', 'null': 'True', 'blank': 'True'}),
             'daily_question1_response': ('django.db.models.fields.CharField', [], {'max_length': '160', 'null': 'True', 'blank': 'True'}),
             'daily_question2_response': ('django.db.models.fields.CharField', [], {'max_length': '160', 'null': 'True', 'blank': 'True'}),
             'daily_question3_response': ('django.db.models.fields.CharField', [], {'max_length': '160', 'null': 'True', 'blank': 'True'}),
