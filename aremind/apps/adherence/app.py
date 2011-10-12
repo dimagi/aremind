@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonl
 # vim: ai ts=4 sts=4 et sw=4
 import datetime
 import logging
+from string import lower
 
 from django.core.mail import EmailMessage, send_mail
 from django.conf import settings
@@ -46,7 +47,7 @@ class AdherenceApp(AppBase):
     """
     def validate_password(self, msg):
         contact = msg.connection.contact
-        return msg.text == contact.password
+        return lower(msg.text) == lower(contact.password)
 
     def queue_outgoing_messages(self):
         """ generate queued messages for adherence reminders """

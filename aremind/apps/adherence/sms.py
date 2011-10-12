@@ -82,9 +82,14 @@ def session_listener(session, is_ending):
     connection = session.connection
     patient = Patient.objects.get(contact = connection.contact)
     days_since_enrollment = patient.get_days_since_enrollment(session.start_date.date())
+    
+    # Lookup survey and set survey constants
     survey = aremind.apps.adherence.models.PatientSurvey.find_active(patient, QUERY_TYPE_SMS)
     completed = aremind.apps.adherence.models.PatientSurvey.STATUS_COMPLETE
     not_completed = aremind.apps.adherence.models.PatientSurvey.STATUS_NOT_COMPLETED
+    
+    # Variable to check whether to send survey completion message
+    send_survey_completion_message = False
     
     if is_ending:
         if session.canceled:
@@ -103,9 +108,16 @@ def session_listener(session, is_ending):
                 else:
                     # It's a monthly survey that completed successfully
                     survey.completed(completed)
+                    send_survey_completion_message = True
             else:
                 # It's a daily survey that completed successfully
                 survey.completed(completed)
+                send_survey_completion_message = True
+            
+            if send_survey_completion_message:
+                msg = OutgoingMessage(connection, _("Thank you. Please remember to delete these messages."))
+                router = Router()
+                router.outgoing(msg)
     else:
         # If it's the last day of the survey, deactivate the query schedule so that it won't start again after this day
         if days_since_enrollment >= FINAL_SURVEY_DAY:
