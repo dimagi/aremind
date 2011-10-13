@@ -37,6 +37,7 @@ RSYNC_EXCLUDE = (
 env.home = '/home/uwkenya'                              #Edit me!
 env.project = 'aremind'                                 #Edit me!
 env.code_repo = 'https://github.com/dimagi/aremind.git'   #Edit me!
+env.listen_port = '80' #The default listen port unless you specify something else in staging or production
 
 
 def _setup_path():
@@ -72,6 +73,7 @@ def staging():
     env.hosts = ['50.57.138.194']
     env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)
+    env.listen_port = '8000'
     _setup_path()
 
 
@@ -85,6 +87,7 @@ def production():
     env.hosts = ['10.84.168.98']
     env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)
+    env.listen_port = '80'
     _setup_path()
 
 
