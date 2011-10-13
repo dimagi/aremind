@@ -475,8 +475,8 @@ class QuerySchedule(models.Model):
             return False
         today = datetime.date.today()
         time_of_day = datetime.datetime.now().time()
-        if time_of_day < self.time_of_day:
-            # too early in the day for this one
+        if (time_of_day < self.time_of_day or today < self.start_date):
+            # too early in the day, or start_date has not yet arrived
             return False
         schedule_it = False
         if self.last_run is None:
@@ -609,3 +609,28 @@ class PillsMissed(models.Model):
                           num_missed=self.num_missed,
                           date=self.date,
                           source=self.get_source_display())
+
+"""
+UW Kenya Implementation
+
+An unmanaged model which points to the view used in reporting.
+For view creation, see apps/adherence/sql/uwkenyasurvey.sql
+"""
+class UWKenyaSurvey(models.Model):
+    session_id = models.IntegerField(primary_key = True)
+    start_date = models.DateTimeField()
+    subject_number = models.CharField(max_length=20)
+    phone = models.CharField(max_length=32)
+    language = models.CharField(max_length=6)
+    mobile_network = models.CharField(max_length=50)
+    ask_password_response = models.CharField(max_length=160)
+    daily_question1_response = models.CharField(max_length=160)
+    daily_question2_response = models.CharField(max_length=160)
+    daily_question3_response = models.CharField(max_length=160)
+    daily_question4_response = models.CharField(max_length=160)
+    monthly_question1_response = models.CharField(max_length=160)
+    monthly_question2_response = models.CharField(max_length=160)
+    
+    class Meta:
+        managed = False
+

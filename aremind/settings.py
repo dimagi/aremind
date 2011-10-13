@@ -80,13 +80,13 @@ INSTALLED_APPS = [
 # tabbed navigation. when adding an app to INSTALLED_APPS, you may wish
 # to add it here, also, to expose it in the rapidsms ui.
 RAPIDSMS_TABS = [
-    ("aremind.apps.broadcast.views.dashboard", "Dashboard"),    
-    ("aremind.apps.broadcast.views.send_message", "Send a Message"),
-    ("aremind.apps.adherence.views.dashboard", "Adherence"),
-    ("aremind.apps.reminders.views.dashboard", "Appointments"),
+#    ("aremind.apps.broadcast.views.dashboard", "Dashboard"),    
+#    ("aremind.apps.broadcast.views.send_message", "Send a Message"),
+    ("aremind.apps.adherence.views.uwkenya_results", "Reports"),
+#    ("aremind.apps.reminders.views.dashboard", "Appointments"),
     ("aremind.apps.patients.views.list_patients", "Patients"),
-    ("broadcast-forwarding", "Forwarding"),
-    ("aremind.apps.groups.views.list_groups", "Groups"),
+#    ("broadcast-forwarding", "Forwarding"),
+#    ("aremind.apps.groups.views.list_groups", "Groups"),
     ("aremind.apps.groups.views.list_contacts","People"),
 #    ("settings", "Settings"),
 #    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
@@ -211,7 +211,7 @@ TIME_INPUT_FORMATS = ['%H:%M', '%H:%M:%S']
 
 ROOT_URLCONF = "aremind.urls"
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'Africa/Nairobi'
 
 LOGIN_URL = '/account/login/'
 
@@ -297,27 +297,41 @@ CELERYBEAT_SCHEDULE = {
         "task": "aremind.apps.adherence.tasks.ReminderSchedulerTask",
         "schedule": crontab(),
     },
-    "adherence-update-feeds": {
-        "task": "aremind.apps.adherence.tasks.FeedUpdatesTask",
-        "schedule": crontab(minute=15), # Quarter after every hour
-    },
-    "broadcast-task": {
-        "task": "aremind.apps.broadcast.tasks.BroadcastCronTask",
-        "schedule": crontab(), # every minute
-    },
-    "reminders-scheduler-task": {
-        "task": "aremind.apps.reminders.tasks.ReminderSchedulerTask",
-        "schedule": crontab(), # every minute
-    },
+#    "adherence-update-feeds": {
+#        "task": "aremind.apps.adherence.tasks.FeedUpdatesTask",
+#        "schedule": crontab(minute=15), # Quarter after every hour
+#    },
+#    "broadcast-task": {
+#        "task": "aremind.apps.broadcast.tasks.BroadcastCronTask",
+#        "schedule": crontab(), # every minute
+#    },
+#    "reminders-scheduler-task": {
+#        "task": "aremind.apps.reminders.tasks.ReminderSchedulerTask",
+#        "schedule": crontab(), # every minute
+#    },
 #    "reminders-email-task": {
 #        "task": "aremind.apps.reminders.tasks.ReminderEmailTask",
 #        "schedule": crontab(hour=12, minute=0),
 #    },
     "decisiontree-tick": {
-        "task": "decisiontree.tasks.PeriodicTask",
+        "task": "aremind.apps.adherence.tasks.DecisionTreeTimeoutTask",
         "schedule": crontab(),  # every minute
     },
+    "uwkenya-email-task": {
+        "task": "aremind.apps.adherence.tasks.UWKenyaEmailReportTask",
+        "schedule": crontab(hour = 7, minute = 0),
+    },
 }
+
+# The number of seconds to wait before resending a question in the decisiontree
+DECISIONTREE_TIMEOUT = 290
+
+# The names of the states for which to apply the timeout rule
+DECISIONTREE_TIMEOUT_STATES = ["ask_password"]
+
+# The maximum number of times to apply the timeout rule to a given state
+DECISIONTREE_TIMEOUT_MAX_RETRIES = 2
+
 
 # Store the schedule in the Django database
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

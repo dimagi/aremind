@@ -49,11 +49,11 @@ class ContactForm(forms.ModelForm):
     """ Form for managing contacts """
 
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.none())
-    phone = forms.CharField(validators=[validate_phone], required=True, widget=FancyPhoneInput)
+    phone = forms.CharField(validators=[validate_phone], required=False, widget=FancyPhoneInput)
 
     class Meta:
         model = Contact
-        exclude = ('language', 'name', 'primary_backend', 'pin')
+        exclude = ('language', 'name', 'primary_backend', 'pin', 'password')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
@@ -64,8 +64,8 @@ class ContactForm(forms.ModelForm):
         self.fields['groups'].widget = forms.CheckboxSelectMultiple()
         self.fields['groups'].queryset = Group.objects.order_by('name')
         self.fields['groups'].required = False
-        for name in ('first_name', 'last_name', 'phone'):
-            self.fields[name].required = True
+        #for name in ('first_name', 'last_name', 'phone'):
+        #   self.fields[name].required = True
 
     def save(self, commit=True):
         instance = super(ContactForm, self).save()

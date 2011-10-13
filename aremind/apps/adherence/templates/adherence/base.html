@@ -1,4 +1,4 @@
-{% extends "aremind/layout-split-2.html" %}
+{% extends "aremind/layout.html" %}
 
 {% block title %}Adherence{% endblock %}
 
@@ -15,14 +15,14 @@
     <script src="{{ STATIC_URL }}adherence/js/adherence.js" type="text/javascript"></script>
 {% endblock %}
 
-{% block left %}
+{% block content %}
 <div class="module">
-  <h2>Adherence reports</h2>
+  <h2>Reports</h2>
 <ul id="adherence-nav">
-  <li><a href="{% url adherence-dashboard %}">Adherence Dashboard</a></li>
-  <li><a href="{% url adherence-query-results %}">Adherence Query Results Report </a></li>
-  <li><a href="{% url adherence-pills-missed %}">Pills Missed (self-reported)</a></li>
-  <li><a href="{% url adherence-wisepill-by-last-report %}">Wisepill devices by last report time</a></li>
+  <li><a href="{% url adherence-dashboard %}">Query Schedule List</a></li>
+  <li><a href="{% url adherence-query-results %}">Query Schedule Results Report </a></li>
+  <li><a href="{% url adherence-uwkenya-results %}">UW Kenya Study Results Report </a></li>
+  <li><a href="{% url adherence-uwkenya-results-csv %}">UW Kenya Study Results Report (csv) </a></li>
 </ul>
 </div>
 {% endblock %}
