@@ -5,7 +5,7 @@ import logging
 import re
 
 from django.dispatch import receiver
-from decisiontree.models import Question, Answer, Tree, TreeState, Transition
+from decisiontree.models import Question, Answer, Tree, TreeState, Transition, Entry
 from threadless_router.base import incoming
 from threadless_router.router import Router
 from rapidsms.messages import OutgoingMessage
@@ -21,7 +21,6 @@ ANSWER_RE = r".*(\d+).*"
 """UW Implementation - additional constants"""
 DAYS_FOR_MONTHLY_QUESTIONS = [1, 30, 60]
 LAST_DAILY_TREESTATE = "ask_daily_question4"
-FINAL_SURVEY_DAY = 60
 
 
 # In RapidSMS, message translation is done in OutgoingMessage, so no need
@@ -58,6 +57,19 @@ def start_tree_for_all_patients():
     for patient in Patient.objects.all():
         start_tree_for_patient(tree, patient)
 
+"""
+UW Kenya Implementation
+
+Retrieves the text associated with the decisiontree entry for the
+given session and state name. If the entry does not exist, None
+is returned.
+"""
+def get_decisiontree_entry_text(session, state_name):
+    try:
+        entry = Entry.objects.filter(session = session).get(transition__current_state__name = state_name)
+        return entry.text
+    except Entry.DoesNotExist:
+        return None
 
 """
 UW Kenya Implementation
@@ -92,6 +104,19 @@ def session_listener(session, is_ending):
     send_survey_completion_message = False
     
     if is_ending:
+        survey.subject_number = patient.subject_number
+        survey.phone = connection.contact.phone
+        survey.language = connection.contact.language
+        survey.mobile_network = connection.contact.mobile_network
+        survey.ask_password_response = get_decisiontree_entry_text(session, "ask_password")
+        survey.daily_question1_response = get_decisiontree_entry_text(session, "ask_daily_question1")
+        survey.daily_question2_response = get_decisiontree_entry_text(session, "ask_daily_question2")
+        survey.daily_question3_response = get_decisiontree_entry_text(session, "ask_daily_question3")
+        survey.daily_question4_response = get_decisiontree_entry_text(session, "ask_daily_question4")
+        survey.monthly_question1_response = get_decisiontree_entry_text(session, "ask_monthly_question1")
+        survey.monthly_question2_response = get_decisiontree_entry_text(session, "ask_monthly_question2")
+        survey.save()
+        
         if session.canceled:
             survey.completed(not_completed)
         else:
@@ -118,10 +143,5 @@ def session_listener(session, is_ending):
                 msg = OutgoingMessage(connection, _("Thank you. Please remember to delete these messages."))
                 router = Router()
                 router.outgoing(msg)
-    else:
-        # If it's the last day of the survey, deactivate the query schedule so that it won't start again after this day
-        if days_since_enrollment >= FINAL_SURVEY_DAY:
-            query_schedule = patient.adherence_query_schedules.all()[0]
-            query_schedule.active = False
-            query_schedule.save()
+
 

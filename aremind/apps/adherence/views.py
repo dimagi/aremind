@@ -13,7 +13,7 @@ from aremind.apps.adherence.forms import (ReminderForm, FeedForm, EntryForm,
                                           QueryScheduleForm)
 from aremind.apps.adherence.models import (Reminder, Feed, Entry,
                                            QuerySchedule, PatientSurvey,
-                                           PillsMissed,UWKenyaSurvey)
+                                           PillsMissed)
 from aremind.apps.patients.models import Patient
 
 logger = logging.getLogger('adherence.views')
@@ -174,13 +174,13 @@ def query_results(request):
 @login_required
 def uwkenya_results(request):
     context = {}
-    context['results'] = UWKenyaSurvey.objects.all().order_by('-start_date')
+    context['results'] = PatientSurvey.objects.all().order_by('-start_date')
     return render(request, 'adherence/uwkenya_results_report.html', context)
 
 @login_required
 def uwkenya_results_csv(request):
     context = {}
-    context['results'] = UWKenyaSurvey.objects.all().order_by('-start_date')
+    context['results'] = PatientSurvey.objects.all().order_by('-start_date')
     return render(request, 'adherence/uwkenya_results_report.csv', context, content_type="application/csv")
 
 @login_required

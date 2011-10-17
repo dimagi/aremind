@@ -46,8 +46,8 @@
                         <a class='button' title="Start Survey (for testing only)" href='{% url patient-start-adherence-tree patient.pk %}'><span class='ui-icon ui-icon-circle-triangle-e'></span></a>
                         {% comment %}
                         <a class='button' title='Start Adherence Report Voice Survey (IVR) (for testing only)' href='{% url patient-start-ivr patient.pk %}'><span class='ui-icon ui-icon-arrowthick-2-e-w'></span></a>
-                        <a class='button' title='Show messages to patient' href='{% url messages-to-patient patient.pk %}'><span class='ui-icon ui-icon-info'></span></a>
                         {% endcomment %}
+                        <a class='button' title='Show messages for patient' href='{% url messages-to-patient patient.pk %}'><span class='ui-icon ui-icon-info'></span></a>
                     </td>
                 </tr>
             {% empty %}

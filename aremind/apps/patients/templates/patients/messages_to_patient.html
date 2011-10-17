@@ -1,7 +1,7 @@
 {% extends "patients/base.html" %}
 {% load i18n pagination_tags sorting_tags %}
 
-{% block title %}Messages to patient{% endblock %}
+{% block title %}Messages for patient{% endblock %}
 
 {% block content %}
 <div class='module'>
@@ -12,6 +12,7 @@
         <thead>
             <tr>
                 <th>{% anchor date "Date" %}</th>
+                <th>{% anchor text "Inbound / Outbound" %}</th>
                 <th>{% anchor text "Text" %}</th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
             {% for message in texts %}
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td>{{ message.date }}</td>
+                    <td>{{ message.direction }}</td>
                     <td>{{ message.text }}</td>
                 </tr>
             {% empty %}

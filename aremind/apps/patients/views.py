@@ -106,8 +106,7 @@ def messages_to_patient(request, patient_id):
     contact = patient.contact
     connections = Connection.objects.filter(contact=contact)
     messages = messagelog.Message.objects.filter(
-        Q(contact=patient.contact) | Q(connection__in=connections),
-        direction="O") \
+        Q(contact=patient.contact) | Q(connection__in=connections)) \
         .order_by('-date')
     # note - can't call these 'messages' in the request context because
     # then our base template will try to render them as Django 'messages'
@@ -152,6 +151,9 @@ def patient_start_adherence_tree(request, patient_id):
     """Start adherence tree interaction with patient."""
     patient = get_object_or_404(patients.Patient, pk=patient_id)
     survey = PatientSurvey(patient=patient, query_type=QUERY_TYPE_SMS, is_test=True)
+    survey.start_date = datetime.datetime.now()
+    survey.subject_number = patient.subject_number
+    survey.save()
     survey.start()
     return redirect('patient-list')
 

@@ -1,6 +1,7 @@
 import random
 import string
 import datetime
+import re
 
 from django.conf import settings
 from django import forms
@@ -20,6 +21,8 @@ from aremind.apps.patients import models as patients
 
 XML_DATE_FORMATS = ('%b  %d %Y ',)
 XML_TIME_FORMATS = ('%H:%M', )
+
+_ = lambda s: s
 
 class PatientForm(forms.ModelForm):
     # NB: This form is only used for importing patient data
@@ -106,6 +109,17 @@ class PatientRemindersForm(forms.ModelForm):
             else:
                 self.initial["survey_active"] = True
                 self.fields["survey_active"].widget.attrs["disabled"] = "disabled"
+
+    """
+    UW Kenya Implementation
+    
+    Added this function to validate that no whitespace characters are entered in the password field.
+    """
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        if(re.match(r"^.*\s.*$", password)):
+            raise forms.ValidationError(_("The password cannot contain any spaces."))
+        return password
 
     """
     UW Kenya Implementation

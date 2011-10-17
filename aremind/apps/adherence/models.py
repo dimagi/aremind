@@ -26,6 +26,7 @@ from aremind.apps.groups.models import Group
 from aremind.apps.patients.models import Patient
 logger = logging.getLogger('adherence.models')
 
+FINAL_SURVEY_DAY = 60
 
 class ReminderReadyManager(models.Manager):
     def ready(self):
@@ -506,11 +507,23 @@ class QuerySchedule(models.Model):
         """Start any queries that are scheduled to start now."""
         if self.should_run(force):
             logger.debug("Starting query from schedule %s" % self)
+            current_time = datetime.datetime.now()
+            current_date = datetime.date.today()
+            
             for patient in self.who_should_receive():
-                survey = PatientSurvey(patient=patient,
-                                       query_type=self.query_type)
-                survey.start()
-            self.last_run = datetime.datetime.now()
+                days_since_enrollment = patient.get_days_since_enrollment(current_date)
+                if days_since_enrollment > FINAL_SURVEY_DAY:
+                    self.active = False
+                    connection = patient.contact.default_connection
+                    Router().get_app('decisiontree').end_sessions(connection)
+                else:
+                    survey = PatientSurvey(patient=patient,
+                                           query_type=self.query_type)
+                    survey.start_date = current_time
+                    survey.subject_number = patient.subject_number
+                    survey.save()
+                    survey.start()
+                    self.last_run = current_time
             self.save()
 
 class PatientSurveyException(Exception):
@@ -527,6 +540,19 @@ class PatientSurvey(models.Model):
     query_type = models.IntegerField(choices=QUERY_TYPES)
     last_modified = models.DateTimeField(auto_now=True)
     is_test = models.BooleanField(default=False)
+    
+    start_date = models.DateTimeField()
+    subject_number = models.CharField(max_length=20)
+    phone = models.CharField(max_length=32)
+    language = models.CharField(max_length=6)
+    mobile_network = models.CharField(max_length=50)
+    ask_password_response = models.CharField(max_length=160)
+    daily_question1_response = models.CharField(max_length=160)
+    daily_question2_response = models.CharField(max_length=160)
+    daily_question3_response = models.CharField(max_length=160)
+    daily_question4_response = models.CharField(max_length=160)
+    monthly_question1_response = models.CharField(max_length=160)
+    monthly_question2_response = models.CharField(max_length=160)
     
     STATUS_CREATED = -2
     STATUS_STARTED = -1
@@ -609,28 +635,4 @@ class PillsMissed(models.Model):
                           num_missed=self.num_missed,
                           date=self.date,
                           source=self.get_source_display())
-
-"""
-UW Kenya Implementation
-
-An unmanaged model which points to the view used in reporting.
-For view creation, see apps/adherence/sql/uwkenyasurvey.sql
-"""
-class UWKenyaSurvey(models.Model):
-    session_id = models.IntegerField(primary_key = True)
-    start_date = models.DateTimeField()
-    subject_number = models.CharField(max_length=20)
-    phone = models.CharField(max_length=32)
-    language = models.CharField(max_length=6)
-    mobile_network = models.CharField(max_length=50)
-    ask_password_response = models.CharField(max_length=160)
-    daily_question1_response = models.CharField(max_length=160)
-    daily_question2_response = models.CharField(max_length=160)
-    daily_question3_response = models.CharField(max_length=160)
-    daily_question4_response = models.CharField(max_length=160)
-    monthly_question1_response = models.CharField(max_length=160)
-    monthly_question2_response = models.CharField(max_length=160)
-    
-    class Meta:
-        managed = False
 

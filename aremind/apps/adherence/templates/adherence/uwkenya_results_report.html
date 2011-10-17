@@ -11,6 +11,8 @@
 <thead>
   <tr>
     <th style="width: 175px;">{% anchor start_date "Date Survey Began"%}</th>
+    <th>Test?</th>
+    <th>Status</th>
     <th>{% anchor subject_number "Patient ID"%}</th>
     <th>{% anchor phone "Mobile Number"%}</th>
     <th>{% anchor mobile_network "Network"%}</th>
@@ -27,6 +29,8 @@
 {% for result in results %}
 <tr class="{% cycle 'odd' 'even' %}">
   <td>{{ result.start_date }}</td>
+  <td>{{ result.is_test }}</td>
+  <td>{{ result.get_status_display }}</td>
   <td>{{ result.subject_number }}</td>
   <td>{{ result.phone }}</td>
   <td>{{ result.mobile_network }}</td>

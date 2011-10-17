@@ -14,7 +14,7 @@ from email.mime.application import MIMEApplication
 from rapidsms.apps.base import AppBase
 from rapidsms.messages import OutgoingMessage
 
-from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule, UWKenyaSurvey
+from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule
 from aremind.apps.adherence.sms import TRIGGER, session_listener
 
 from aremind.apps.groups.models import Group
@@ -126,7 +126,7 @@ def send_uwkenya_report_email():
         # Construct the attachment
         template = get_template("adherence/uwkenya_results_report.csv")
         context = {}
-        context["results"] = UWKenyaSurvey.objects.all().order_by("-start_date")
+        context["results"] = PatientSurvey.objects.all().order_by("-start_date")
         csv_data = template.render(Context(context))
         report = MIMEApplication(csv_data, "csv")
         report.add_header("content-disposition", "attachment", filename="report.csv")
