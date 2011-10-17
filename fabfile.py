@@ -73,7 +73,7 @@ def staging():
     env.hosts = ['50.57.138.194']
     env.settings = '%(project)s.localsettings' % env
     env.db = '%s_%s' % (env.project, env.environment)
-    env.listen_port = '8000'
+    env.listen_port = '80'
     _setup_path()
 
 
