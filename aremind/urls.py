@@ -47,6 +47,7 @@ urlpatterns = patterns('',
     (r'^selectable/', include('selectable.urls')),
 
     url(r'^tropo/$', 'rtropo.views.message_received', name = 'tropo', kwargs = { 'backend_name': 'tropo'} ),
+    (r'^http/', include('threadless_router.backends.http.urls')),
 
     (r'^couchlog/', include('couchlog.urls')),
 )

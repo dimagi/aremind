@@ -62,6 +62,7 @@ INSTALLED_APPS = [
 
     # the rapidsms contrib apps.
     # "rapidsms.contrib.export",
+    "threadless_router.backends.http",
     "threadless_router.backends.httptester",
     "rapidsms.contrib.locations",
     "rapidsms.contrib.messagelog",
