@@ -345,6 +345,6 @@ INSTALLED_BACKENDS = {}
 #    'django.contrib.admin',
 #)
 
-DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call Elizabeth at 617 414 7022 if you need help."
+DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
