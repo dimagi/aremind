@@ -11,48 +11,48 @@
         "pk": 2, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Since yesterday, did you have _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "Since yesterday, did you have _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "Did you have sex yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "Did you have sex yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {
         "pk": 3, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Did you (or your partner) use a condom when you had _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "Did you (or your partner) use a condom when you had _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "Did you or your partner use a condom when you had sex? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "Did you or your partner use a condom when you had sex? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {
         "pk": 4, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Between now and tomorrow, do you think you will have _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "Between now and tomorrow, do you think you will have _sex? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "Do you think you will have sex tomorrow? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "Do you think you will have sex tomorrow? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {
         "pk": 5, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "Did you remember to take your study pill yesterday? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "Did you remember to take your study pill yesterday? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "Did you remember to take your study pills yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "Did you remember to take your study pills yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {
         "pk": 6, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "In the past month, did you or your partner try to become pregnant? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "In the past month, did you or your partner try to become pregnant? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "In the past month, did you or your partner try to become pregnant? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "In the past month, did you or your partner try to become pregnant? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {
         "pk": 7, 
         "model": "decisiontree.question", 
         "fields": {
-            "text": "In the past month, do you think you could have been infected with HIV? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND", 
-            "error_response": "In the past month, do you think you could have been infected with HIV? Enter 1:YES, 2:NO, 3:CHOOSE NOT TO RESPOND"
+            "text": "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond.", 
+            "error_response": "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
         }
     }, 
     {

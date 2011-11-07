@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-11 19:10-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#UW Kenya Translations
+msgid "Thank you for joining the study."
+msgstr "Ni ngatho nigutonya utwiriaini."
+
+msgid "What is your secret password?"
+msgstr "Kiugo giaku kia thiri niririku?"
+
+msgid "You have not entered the correct password. Please try again."
+msgstr "Ndunekira kiugo giaku kia thiri kiria kiagiriire. Niurorio ugerie ringi."
+
+msgid "Did you have sex yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Niuronanire kimwiri ira? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "Did you or your partner use a condom when you had sex? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Wee kana mwendwa waku nimurahuthirire mubira riria muronanire kimwiri? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "Do you think you will have sex tomorrow? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Niugwiciria niukonana kimwiri ruciu? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "Did you remember to take your study pills yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Niurarikanire kuhuthira burugutu cia utwiria ira? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "In the past month, did you or your partner try to become pregnant? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Mweri ucio urahitukire, wee kana mwendwa waku nimurageririe kugia na nda? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Mweri ucio urahitukire, niugwiciria niungiragwatirio HIV? Niurorio ucokie 1: ii, 2: aca, 3: ndathura kwaga gucokia."
+
+msgid "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
+msgstr "Kwa mahitia, tutinataukirwo ni ndumiriri yaku. Niurahoywo uhurire [NAME] kuhitukira [#] ungikorwo niukubatara ni uteithio."
+
+msgid "Thank you. Please remember to delete these messages."
+msgstr "Ni ngatho. Nitwakuhoya uririkane gutharia ndumiriri ici."
+

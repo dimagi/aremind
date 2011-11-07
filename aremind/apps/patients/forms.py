@@ -160,6 +160,10 @@ class PatientRemindersForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         patient = super(PatientRemindersForm, self).save(commit=False)
         
+        #If the patient is being created for the first time, set the date enrolled
+        if patient.date_enrolled is None:
+            patient.date_enrolled = datetime.date.today()
+        
         #Save contact information for patient
         if not patient.contact_id:
             contact, _ = Contact.objects.get_or_create(name=patient.subject_number)

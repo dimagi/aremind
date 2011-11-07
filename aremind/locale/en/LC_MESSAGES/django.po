@@ -73,3 +73,38 @@ msgstr ""
 #: apps/reminders/app.py:197
 msgid "tomorrow"
 msgstr ""
+
+#UW Kenya Translations
+msgid "Thank you for joining the study."
+msgstr "Thank you for joining the study."
+
+msgid "What is your secret password?"
+msgstr "What is your secret password?"
+
+msgid "You have not entered the correct password. Please try again."
+msgstr "You have not entered the correct password. Please try again."
+
+msgid "Did you have sex yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Did you have sex yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "Did you or your partner use a condom when you had sex? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Did you or your partner use a condom when you had sex? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "Do you think you will have sex tomorrow? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Do you think you will have sex tomorrow? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "Did you remember to take your study pills yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "Did you remember to take your study pills yesterday? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "In the past month, did you or your partner try to become pregnant? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "In the past month, did you or your partner try to become pregnant? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
+msgstr "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
+
+msgid "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
+msgstr "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
+
+msgid "Thank you. Please remember to delete these messages."
+msgstr "Thank you. Please remember to delete these messages."
+
