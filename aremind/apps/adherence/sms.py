@@ -120,7 +120,7 @@ def session_listener(session, is_ending):
         if session.canceled:
             survey.completed(not_completed)
         else:
-            if days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS:
+            if (days_since_enrollment in DAYS_FOR_MONTHLY_QUESTIONS) or survey.is_test:
                 # If the last tree state asked the final daily question, then it's a daily session that just finished, so ask the monthly questions.
                 # Otherwise, it's a monthly session that just finished, so just let the session end.
                 entries = session.entries
