@@ -14,7 +14,7 @@ from email.mime.application import MIMEApplication
 from rapidsms.apps.base import AppBase
 from rapidsms.messages import OutgoingMessage
 
-from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule
+from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule, PatientSurvey
 from aremind.apps.adherence.sms import TRIGGER, session_listener
 
 from aremind.apps.groups.models import Group
