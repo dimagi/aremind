@@ -104,7 +104,27 @@
             "name": "yes_no_refuse", 
             "description": "Yes / No / Choose Not to Respond"
         }
-    }, 
+    },
+    {
+        "pk": 5, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "([2|3])", 
+            "type": "R", 
+            "name": "no_refuse", 
+            "description": "No / Choose Not to Respond"
+        }
+    },
+    {
+        "pk": 6, 
+        "model": "decisiontree.answer", 
+        "fields": {
+            "answer": "1", 
+            "type": "A", 
+            "name": "yes", 
+            "description": "Yes"
+        }
+    },
     {
         "pk": 1, 
         "model": "decisiontree.treestate", 
@@ -182,7 +202,7 @@
         "pk": 2, 
         "model": "decisiontree.transition", 
         "fields": {
-            "answer": 2, 
+            "answer": 6, 
             "tags": [], 
             "current_state": 2, 
             "next_state": 3
@@ -192,7 +212,7 @@
         "pk": 3, 
         "model": "decisiontree.transition", 
         "fields": {
-            "answer": 3, 
+            "answer": 5, 
             "tags": [], 
             "current_state": 2, 
             "next_state": 4

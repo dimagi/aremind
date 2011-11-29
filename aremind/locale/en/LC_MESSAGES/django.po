@@ -102,8 +102,8 @@ msgstr "In the past month, did you or your partner try to become pregnant? Pleas
 msgid "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
 msgstr "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
 
-msgid "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
-msgstr "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
+msgid "Unfortunately, we did not understand your message. Please call us at 0708086184 if you need help."
+msgstr "Unfortunately, we did not understand your message. Please call us at 0708086184 if you need help."
 
 msgid "Thank you. Please remember to delete these messages."
 msgstr "Thank you. Please remember to delete these messages."

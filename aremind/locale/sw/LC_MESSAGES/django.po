@@ -44,8 +44,8 @@ msgstr "Kwa mwezi uliopita, je wewe au mpenzi wako mlijaribu kupata mimba? Tafad
 msgid "In the past month, do you think you could have been infected with HIV? Please respond 1: yes, 2: no, 3: I choose to not respond."
 msgstr "Kwa mwezi uliopita, unafikiria huenda uliambukizwa HIV? Tafadhali jibu 1:ndio, 2:la, 3: nachagua kutojibu."
 
-msgid "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
-msgstr "Kwa bahati mbaya, hatukuelewa ujumbe wako. Tafadhali pigia [NAME] simu kwa [#] ikiwa unahitaji usaidizi."
+msgid "Unfortunately, we did not understand your message. Please call us at 0708086184 if you need help."
+msgstr "Kwa bahati mbaya, hatukuelewa ujumbe wako. Tafadhali tupigie simu kwa 0708086184 ikiwa unahitaji usaidizi."
 
 msgid "Thank you. Please remember to delete these messages."
 msgstr "Asante. Tafadhali kumbuka kufuta ujumbe huu."

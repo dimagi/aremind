@@ -85,7 +85,7 @@ RAPIDSMS_TABS = [
 #    ("aremind.apps.broadcast.views.send_message", "Send a Message"),
     ("aremind.apps.adherence.views.uwkenya_results", "Reports"),
 #    ("aremind.apps.reminders.views.dashboard", "Appointments"),
-    ("aremind.apps.patients.views.list_patients", "Patients"),
+    ("aremind.apps.patients.views.list_patients", "Participants"),
 #    ("broadcast-forwarding", "Forwarding"),
 #    ("aremind.apps.groups.views.list_groups", "Groups"),
     ("aremind.apps.groups.views.list_contacts","People"),
@@ -348,3 +348,8 @@ INSTALLED_BACKENDS = {}
 DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+#Force logout after 60 minutes of inactivity
+#SESSION_COOKIE_AGE = 3600
+#SESSION_SAVE_EVERY_REQUEST = True
+
