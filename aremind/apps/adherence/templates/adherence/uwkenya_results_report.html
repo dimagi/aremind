@@ -17,12 +17,13 @@
     <th>{% anchor phone "Mobile Number"%}</th>
     <th>{% anchor mobile_network "Network"%}</th>
     <th>{% anchor language "Language"%}</th>
-    <th>{% anchor daily_question1_response "Daily Question 1"%}</th>
-    <th>{% anchor daily_question2_response "Daily Question 2"%}</th>
-    <th>{% anchor daily_question3_response "Daily Question 3"%}</th>
-    <th>{% anchor daily_question4_response "Daily Question 4"%}</th>
-    <th>{% anchor monthly_question1_response "Monthly Question 1"%}</th>
-    <th>{% anchor monthly_question2_response "Monthly Question 2"%}</th>
+    <th>{% anchor daily_question1_response "Daily Q. 1"%}</th>
+    <th>{% anchor daily_question2_response "Daily Q. 2"%}</th>
+    <th>{% anchor daily_question3_response "Daily Q. 3"%}</th>
+    <th>{% anchor daily_question4_response "Daily Q. 4"%}</th>
+    <th>{% anchor monthly_question1_response "Monthly Q. 1"%}</th>
+    <th>{% anchor monthly_question2_response "Monthly Q. 2"%}</th>
+    <th>Answer Count</th>
   </tr>
 </thead>
 <tbody>
@@ -41,6 +42,7 @@
   <td>{{ result.daily_question4_response }}</td>
   <td>{{ result.monthly_question1_response }}</td>
   <td>{{ result.monthly_question2_response }}</td>
+  <td>{{ result.questions_answered|default_if_none:"" }}</td>
 </tr>
 {% endfor %}
 </tbody>

@@ -553,6 +553,7 @@ class PatientSurvey(models.Model):
     daily_question4_response = models.CharField(max_length=160)
     monthly_question1_response = models.CharField(max_length=160)
     monthly_question2_response = models.CharField(max_length=160)
+    questions_answered = models.IntegerField(null=True,blank=True)
     
     STATUS_CREATED = -2
     STATUS_STARTED = -1

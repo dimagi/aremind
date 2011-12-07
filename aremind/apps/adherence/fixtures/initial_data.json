@@ -79,7 +79,7 @@
         "pk": 2, 
         "model": "decisiontree.answer", 
         "fields": {
-            "answer": "([1|3])", 
+            "answer": "^([1|3])$", 
             "type": "R", 
             "name": "yes_refuse", 
             "description": "Yes / Choose Not to Respond"
@@ -99,7 +99,7 @@
         "pk": 4, 
         "model": "decisiontree.answer", 
         "fields": {
-            "answer": "([1|2|3])", 
+            "answer": "^([1|2|3])$", 
             "type": "R", 
             "name": "yes_no_refuse", 
             "description": "Yes / No / Choose Not to Respond"
@@ -109,7 +109,7 @@
         "pk": 5, 
         "model": "decisiontree.answer", 
         "fields": {
-            "answer": "([2|3])", 
+            "answer": "^([2|3])$", 
             "type": "R", 
             "name": "no_refuse", 
             "description": "No / Choose Not to Respond"

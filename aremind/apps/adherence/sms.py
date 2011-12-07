@@ -115,6 +115,16 @@ def session_listener(session, is_ending):
         survey.daily_question4_response = get_decisiontree_entry_text(session, "ask_daily_question4")
         survey.monthly_question1_response = get_decisiontree_entry_text(session, "ask_monthly_question1")
         survey.monthly_question2_response = get_decisiontree_entry_text(session, "ask_monthly_question2")
+        
+        count = (0 if survey.ask_password_response is None else 1)
+        count += (0 if survey.daily_question1_response is None else 1)
+        count += (0 if survey.daily_question2_response is None else 1)
+        count += (0 if survey.daily_question3_response is None else 1)
+        count += (0 if survey.daily_question4_response is None else 1)
+        count += (0 if survey.monthly_question1_response is None else 1)
+        count += (0 if survey.monthly_question2_response is None else 1)
+        survey.questions_answered = count
+        
         survey.save()
         
         if session.canceled:
