@@ -121,6 +121,8 @@ class RemindersApp(AppBase):
         Updates the SentNotification status to 'confirmed' for the given user
         and replies with a thank you message.
         """
+        return False
+        """
         msg_parts = msg.text.split()
         if not msg_parts:
             return False
@@ -159,6 +161,7 @@ class RemindersApp(AppBase):
         group, _ = groups.Group.objects.get_or_create(name=group_name)
         broadcast.groups.add(group)
         msg.respond(self.thank_you)
+        """
 
     def queue_outgoing_notifications(self):
         """ generate queued appointment reminders """
