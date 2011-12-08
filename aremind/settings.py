@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "gunicorn",
     "aremind.apps.groups",
     "aremind.apps.broadcast",
-    "aremind.apps.reminders",
+   #"aremind.apps.reminders",
     "aremind.apps.patients",
     "aremind.apps.adherence",
     "aremind.apps.test_messager",
@@ -157,7 +157,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
 
     #this is for a custom logo on the dashboard (see LOGO_*_URL in settings, above)
     "rapidsms.context_processors.logo",
-    "aremind.apps.reminders.context_processors.messages",
+   #"aremind.apps.reminders.context_processors.messages",
 #    "couchlog.context_processors.static_workaround"
 ]
 
@@ -280,10 +280,10 @@ AUDIT_VIEWS = [
     'aremind.apps.patients.views.patient_onetime_message',
     'aremind.apps.patients.views.patient_start_adherence_tree',
     'aremind.apps.patients.views.messages_to_patient',
-    'aremind.apps.reminders.views.create_edit_notification',
-    'aremind.apps.reminders.views.delete_notification',
-    'aremind.apps.reminders.views.manually_confirm',
-    'aremind.apps.reminders.views.dashboard',
+    #'aremind.apps.reminders.views.create_edit_notification',
+    #'aremind.apps.reminders.views.delete_notification',
+    #'aremind.apps.reminders.views.manually_confirm',
+    #'aremind.apps.reminders.views.dashboard',
     'aremind.apps.wisepill.views.list_messages_for_patient',
     'aremind.apps.test_messager.views.message_form'
 ]
@@ -345,7 +345,7 @@ INSTALLED_BACKENDS = {}
 #    'django.contrib.admin',
 #)
 
-DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call [NAME] at [#] if you need help."
+DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please call us at 0708086184 if you need help."
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
