@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "decisiontree",
 
     #audit utils
-    "auditcare",
+#    "auditcare",
 
     # common dependencies (which don't clutter up the ui).
     "rapidsms.contrib.handlers",
@@ -68,9 +68,9 @@ INSTALLED_APPS = [
     "rapidsms.contrib.messaging",
     # "rapidsms.contrib.registration",
     #"rapidsms.contrib.scheduler",
-    "rapidsms.contrib.echo",
+#    "rapidsms.contrib.echo",
 
-    "couchlog",
+#    "couchlog",
     # this app should be last, as it will always reply with a help message
     "aremind.apps.catch_all",
 ]
@@ -109,7 +109,7 @@ RAPIDSMS_TABS = [
 # debug mode is turned on as default, since rapidsms is under heavy
 # development at the moment, and full stack traces are very useful
 # when reporting bugs. don't forget to turn this off in production.
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = TEMPLATE_DEBUG = False
 
 
 # after login (which is handled by django.contrib.auth), redirect to the
@@ -170,7 +170,7 @@ MIDDLEWARE_CLASSES = [
     'pagination.middleware.PaginationMiddleware',
     'django_sorting.middleware.SortingMiddleware',
 #    'aremind.login_required_everything.RequireLoginMiddleware',
-    'auditcare.middleware.AuditMiddleware',
+#    'auditcare.middleware.AuditMiddleware',
 ]
     
 # -------------------------------------------------------------------- #
@@ -231,11 +231,11 @@ DEFAULT_CONFIRMATIONS_GROUP_NAME = 'Confirmation Recipients'
 
 #The default backend to be used when creating new patient contacts
 #on POST submission of patient data from their server
-DEFAULT_BACKEND_NAME = "tropo"
+DEFAULT_BACKEND_NAME = "message_tester"
 # unless overridden, all outgoing messages will be sent using this backend
-PRIMARY_BACKEND = 'tropo'
+PRIMARY_BACKEND = 'message_tester'
 # if set, the message tester app will always use this backend
-TEST_MESSAGER_BACKEND = 'tropo'
+TEST_MESSAGER_BACKEND = 'message_tester'
 
 RAPIDSMS_HANDLERS_EXCLUDE_APPS = ["couchlog","djcelery"]
 
@@ -337,7 +337,7 @@ DEFAULT_MESSAGE = "Unfortunately, we did not understand your message. Please cal
 AUDIT_DJANGO_USER = True
 AUDIT_MODEL_SAVE = []
 
-NO_LOGIN_REQUIRED_FOR = ["/tropo",
-                         "/tropo/",
-                         "/ajax/",
-                         "/ajax",]
+#NO_LOGIN_REQUIRED_FOR = ["/tropo",
+#                         "/tropo/",
+#                         "/ajax/",
+#                         "/ajax",]

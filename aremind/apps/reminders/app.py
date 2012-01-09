@@ -64,7 +64,6 @@ def daily_email_callback(router, *args, **kwargs):
 class RemindersApp(AppBase):
     """ RapidSMS app to send appointment reminders """
 
-    pin_regex = re.compile(r'^\d{4,6}$')
     conf_keyword = '1'
     date_format = '%B %d, %Y'
 
@@ -76,9 +75,6 @@ class RemindersApp(AppBase):
     not_registered = _('Sorry, your mobile number is not registered.')
     no_reminders = _('Sorry, I could not find any reminders awaiting '
                      'confirmation.')
-    incorrect_pin = _('That is not your PIN code. Please reply with the '
-                      'correct PIN code.')
-    pin_required = _('Please confirm appointments by sending your PIN code.')
     thank_you = _('Thank you for confirming your upcoming appointment.')
 
     def start(self):    
@@ -125,18 +121,13 @@ class RemindersApp(AppBase):
         if not msg_parts:
             return False
         response = msg_parts[0]
-        if response != self.conf_keyword and not self.pin_regex.match(response):
+        if response != self.conf_keyword:
             return False
         contact = msg.connection.contact
         if not contact:
             msg.respond(self.not_registered)
             return True
-        if contact.pin and response == self.conf_keyword:
-            msg.respond(self.pin_required)
-            return True
-        if contact.pin and response != contact.pin:
-            msg.respond(self.incorrect_pin)
-            return True
+
         notifs = reminders.SentNotification.objects.filter(recipient=contact,
                                                            status='sent')
         if not notifs.exists():

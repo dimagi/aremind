@@ -13,3 +13,4 @@ httpd.x86_64
 libxslt.x86_64
 libxslt-devel.x86_64
 libxslt-python.x86_64
+gcc
