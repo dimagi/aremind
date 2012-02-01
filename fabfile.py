@@ -35,7 +35,7 @@ RSYNC_EXCLUDE = (
     '*.example',
     '*.db',
 )
-env.home = '/home/aremind'
+env.home = '/home/fhi'
 env.project = 'aremind'
 env.code_repo = 'git://github.com/dimagi/aremind.git'
 
@@ -84,15 +84,14 @@ def staging():
 
 def production():
     """ use production environment on remote host"""
-    env.code_branch = 'master'
-    env.sudo_user = 'aremind'
+    env.code_branch = 'fhi-master'
+    env.sudo_user = 'fhi'
     env.environment = 'production'
     env.server_port = '9010'
-    env.server_name = 'aremind-production'
-#    env.hosts = ['10.84.168.98']
-    env.hosts = ['192.168.100.63']
+    env.server_name = 'fhi.dimagi.com'
+    env.hosts = ['50.56.213.107']
     env.settings = '%(project)s.localsettings' % env
-    env.remote_os = None # e.g. 'ubuntu' or 'redhat'.  Gets autopopulated by what_os() if you don't know what it is or don't want to specify.
+    env.remote_os = "ubuntu" # e.g. 'ubuntu' or 'redhat'.  Gets autopopulated by what_os() if you don't know what it is or don't want to specify.
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
 
@@ -154,8 +153,8 @@ def setup_server():
     sudo("easy_install -U pip")
     sudo("pip install -U virtualenv")
     upgrade_packages()
-    create_db_user()
-    create_db()
+    #create_db_user()
+    #create_db()
 
 
 def create_db_user():
