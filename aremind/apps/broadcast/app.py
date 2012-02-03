@@ -108,6 +108,7 @@ class BroadcastApp(AppBase):
             count = broadcast.queue_outgoing_messages()
             self.debug('queued {0} broadcast message(s)'.format(count))
             broadcast.set_next_date()
+            broadcast.iteration_num += 1
             broadcast.save()
 
     def send_messages(self):
@@ -116,8 +117,9 @@ class BroadcastApp(AppBase):
         self.info('found {0} message(s) to send'.format(messages.count()))
         for message in messages:
             connection = message.recipient.default_connection
+            message_text = message.broadcast.body.format(iteration_num=message.broadcast.iteration_num)
             msg = OutgoingMessage(connection=connection,
-                                  template=message.broadcast.body)
+                                  template=message_text)
             success = True
             try:
                 self.router.outgoing(msg)

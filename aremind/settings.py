@@ -206,8 +206,7 @@ LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', 'English'),
-    ('th', 'Thai'),
-    ('tl', 'Filipino'),
+    ('jv', 'Javanese')
 )
 
 TIME_INPUT_FORMATS = ['%H:%M', '%H:%M:%S']

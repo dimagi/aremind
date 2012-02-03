@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 
 from django.db import models
+from django.db.models import Q
 
 from rapidsms.models import Contact, Connection
 from rapidsms.contrib.messagelog.models import Message
@@ -60,9 +61,9 @@ class DateAttribute(models.Model):
 
 class BroadcastReadyManager(models.Manager):
     def get_query_set(self):
+        now = datetime.datetime.now()
         qs = super(BroadcastReadyManager, self).get_query_set()
-        qs = qs.filter(date__lt=datetime.datetime.now())
-        qs = qs.exclude(schedule_frequency__isnull=True)
+        qs = qs.filter(Q(date__lt=now) & Q(schedule_frequency__isnull=False) & (Q(schedule_end_date__gte=now) | Q(schedule_end_date__isnull=True)))
         return qs
 
 
@@ -95,7 +96,7 @@ class Broadcast(models.Model):
     groups = models.ManyToManyField(Group, related_name='broadcasts')
     forward = models.ForeignKey('ForwardingRule', related_name='broadcasts',
                                 null=True, blank=True)
-
+    iteration_num = models.IntegerField(default=0)
     objects = models.Manager()
     ready = BroadcastReadyManager()
 

@@ -3,6 +3,7 @@ import string
 
 from django import forms
 from django.forms.models import modelformset_factory
+from django.conf import settings
 
 from rapidsms.models import Contact
 from selectable.forms import AutoComboboxSelectMultipleField
@@ -80,6 +81,7 @@ class PatientRemindersForm(forms.ModelForm):
     reminders = AutoComboboxSelectMultipleField(ReminderLookup, label="Medicine Reminders", required=False)
     feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
     queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
+    language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
 
     class Meta(object):
         model = patients.Patient
@@ -99,6 +101,7 @@ class PatientRemindersForm(forms.ModelForm):
             self.initial['first_name'] = self.instance.contact.first_name
             self.initial['last_name'] = self.instance.contact.last_name
             self.initial['queries'] = self.instance.adherence_query_schedules.all()
+            self.initial['language'] = self.instance.contact.language
         else:
             # Generate subject ID and pin
             self.initial['subject_number'] = self.generate_new_subject_id()
@@ -138,6 +141,7 @@ class PatientRemindersForm(forms.ModelForm):
             patient.contact.last_name = last_name
         patient.contact.phone = patient.mobile_number
         patient.contact.pin = patient.pin
+        patient.contact.language = self.cleaned_data.get('language')
         commit = kwargs.pop('commit', True)
         if commit:
             patient.contact.save()
