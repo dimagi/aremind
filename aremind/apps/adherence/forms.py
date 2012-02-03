@@ -10,10 +10,11 @@ from django.utils.translation import ugettext_lazy as _
 class ReminderForm(forms.ModelForm):
 
     weekdays = forms.MultipleChoiceField(choices=Reminder.WEEKDAY_CHOICES, widget=forms.CheckboxSelectMultiple)
+    message = forms.CharField(label="Message", max_length=160, widget=forms.Textarea)
 
     class Meta(object):
         model = Reminder
-        fields = ('frequency', 'weekdays', 'time_of_day', 'recipients', )
+        fields = ('frequency', 'weekdays', 'time_of_day', 'end_date', 'message', 'recipients', )
 
     def __init__(self, *args, **kwargs):
         super(ReminderForm, self).__init__(*args, **kwargs)
@@ -24,6 +25,7 @@ class ReminderForm(forms.ModelForm):
         qs = Contact.objects.filter(patient__isnull=False).order_by('patient__subject_number')
         self.fields['recipients'].queryset = qs
         self.fields['recipients'].label_from_instance = self.label_from_instance
+        self.fields['end_date'].widget.attrs.update({'class': 'datepicker'})
 
     def label_from_instance(self, obj):
         return obj.patient_set.all()[0].subject_number

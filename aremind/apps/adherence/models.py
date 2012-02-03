@@ -29,8 +29,11 @@ logger = logging.getLogger('adherence.models')
 
 class ReminderReadyManager(models.Manager):
     def ready(self):
+        now = datetime.datetime.now()
+        today = now.date()
         qs = super(ReminderReadyManager, self).get_query_set()
-        qs = qs.filter(date__lt=datetime.datetime.now())
+        qs = qs.filter(date__lt=now)
+        qs = qs.filter(end_date__gte=today)
         return qs
 
 
@@ -62,6 +65,8 @@ class Reminder(models.Model):
 
     date_last_notified = models.DateTimeField(null=True, blank=True)
     date = models.DateTimeField(db_index=True)
+    end_date = models.DateField()
+    message = models.CharField(max_length=160)
 
     objects = ReminderReadyManager()
 
@@ -132,7 +137,7 @@ class Reminder(models.Model):
             message = get_contact_message(contact)
             self.adherence_reminders.create(
                 recipient=contact, date_queued=datetime.datetime.now(),
-                date_to_send=self.date, message=message,
+                date_to_send=self.date, message=self.message,
             )
         return self.recipients.count()
 
