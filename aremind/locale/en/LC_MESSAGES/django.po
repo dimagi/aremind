@@ -17,6 +17,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Translated-Using: django-rosetta 0.6.0\n"
 
+msgid "patient_registration_message"
+msgstr ""
+
 msgid "message_for_week1"
 msgstr ""
 

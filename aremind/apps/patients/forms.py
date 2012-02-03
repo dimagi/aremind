@@ -10,7 +10,7 @@ from selectable.forms import AutoComboboxSelectMultipleField
 
 from aremind.apps.adherence.lookups import ReminderLookup, FeedLookup, QueryLookup
 from aremind.apps.groups.forms import FancyPhoneInput
-from aremind.apps.groups.validators import validate_phone
+from aremind.apps.groups.validators import validate_phone, validate_unique_phone
 from aremind.apps.groups.utils import normalize_number
 from aremind.apps.patients import models as patients
 
@@ -110,6 +110,11 @@ class PatientRemindersForm(forms.ModelForm):
     def clean_mobile_number(self):
         mobile_number = normalize_number(self.cleaned_data['mobile_number'])
         validate_phone(mobile_number)
+        # Validate uniqueness of mobile number
+        if self.instance.contact_id:
+            validate_unique_phone(mobile_number, self.instance.contact_id)
+        else:
+            validate_unique_phone(mobile_number, None)
         return mobile_number
 
     def clean_manual_adherence(self):

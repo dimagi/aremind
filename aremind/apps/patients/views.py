@@ -32,7 +32,7 @@ from aremind.apps.reminders.forms import ReportForm, MonthReportForm
 from dimagi.utils.dates import get_day_of_month
 from rapidsms.contrib.messagelog.models import Message
 
-
+_ = lambda s: s
 logger = logging.getLogger('aremind.apps.patients')
 
 @csrf_exempt
@@ -272,14 +272,30 @@ def list_patient_stats_detail(request, patient_id=None):
 
 @login_required
 def create_edit_patient(request, patient_id=None):
+    new_patient = False
     if patient_id:
         patient = get_object_or_404(patients.Patient, pk=patient_id)
     else:
         patient = patients.Patient()
+        new_patient = True
     if request.method == 'POST':
         form = PatientRemindersForm(request.POST, instance=patient)
         if form.is_valid():
             form.save()
+            
+            # If the patient was just added, send a confirmation SMS
+            if new_patient:
+                msg = OutgoingMessage(patient.contact.default_connection, _("patient_registration_message"))
+                router = Router()
+                success = True
+                try:
+                    router.outgoing(msg)
+                except Exception, e:
+                    logger.exception(e)
+                    success = False
+                if not success:
+                    messages.error(request, _("An error occurred when trying to send confirmation SMS"))
+            
             messages.info(request, "Patient info saved.")
             return redirect('patient-list')
     else:
