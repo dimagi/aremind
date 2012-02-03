@@ -324,6 +324,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "decisiontree.tasks.PeriodicTask",
         "schedule": crontab(),  # every minute
     },
+    "fhi-email-task": {
+        "task": "aremind.apps.adherence.tasks.FHIEmailReportTask",
+        "schedule": crontab(hour = 0, minute = 0),
+    },
 }
 
 # Store the schedule in the Django database

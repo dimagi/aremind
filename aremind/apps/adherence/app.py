@@ -3,11 +3,20 @@
 import datetime
 import logging
 
+from django.core.mail import EmailMessage, send_mail
+from django.conf import settings
+from django.template import Context
+from django.template.loader import get_template
+
 from rapidsms.apps.base import AppBase
 from rapidsms.messages import OutgoingMessage
 
 from aremind.apps.adherence.models import Reminder, SendReminder, QuerySchedule
+from aremind.apps.groups.models import Group
+from aremind.apps.patients.models import Patient
+from rapidsms.contrib.messagelog.models import Message
 
+from email.mime.application import MIMEApplication
 
 # In RapidSMS, message translation is done in OutgoingMessage, so no need
 # to attempt the real translation here.  Use _ so that ./manage.py makemessages
@@ -71,3 +80,34 @@ class AdherenceApp(AppBase):
         for query_schedule in QuerySchedule.objects.filter(active=True):
             query_schedule.start_scheduled_queries()
 
+"""
+This method will send the csv report to all members of the 
+"Daily Report Recipients" group.
+"""
+def send_fhi_report_email():
+    # Retrieve all recipients of the report from the Group with name DEFAULT_DAILY_REPORT_GROUP_NAME
+    recipients = []
+    for contact in Group.objects.get(name = settings.DEFAULT_DAILY_REPORT_GROUP_NAME).contacts.all():
+        recipients.append(contact.email)
+    
+    # If there is at least one recipient, send the email
+    if len(recipients) > 0:
+        # Construct the email message
+        email = EmailMessage (
+            subject = "FHI Daily Report"
+           ,body = "You are receiving this automated email because you are signed up to receive the FHI Daily Report. Please find the results attached in csv format."
+           ,to = recipients
+        )
+        
+        # Construct the attachment
+        template = get_template("adherence/fhi_report.csv")
+        context = {}
+        context["patients"] = Patient.objects.all().order_by("date_enrolled")
+        context["messages"] = Message.objects.all().order_by("date")
+        csv_data = template.render(Context(context))
+        report = MIMEApplication(csv_data, "csv")
+        report.add_header("content-disposition", "attachment", filename="report.csv")
+        email.attach(report)
+        
+        # Send the email
+        email.send()

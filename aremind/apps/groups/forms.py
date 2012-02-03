@@ -65,7 +65,7 @@ class ContactForm(forms.ModelForm):
         self.fields['groups'].queryset = Group.objects.order_by('name')
         self.fields['groups'].required = False
         for name in ('first_name', 'last_name', 'phone'):
-            self.fields[name].required = True
+            self.fields[name].required = False
 
     def save(self, commit=True):
         instance = super(ContactForm, self).save()

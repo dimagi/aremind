@@ -4,6 +4,7 @@ from celery.registry import tasks
 from threadless_router.router import Router
 
 from aremind.apps.adherence.models import Feed
+from aremind.apps.adherence.app import send_fhi_report_email
 
 
 class ReminderSchedulerTask(Task):
@@ -22,3 +23,12 @@ class FeedUpdatesTask(Task):
         
 
 tasks.register(FeedUpdatesTask)
+
+"""
+This task is invoked to send the daily csv report.
+"""
+class FHIEmailReportTask(Task):
+    def run(self):
+        send_fhi_report_email()
+
+tasks.register(FHIEmailReportTask)

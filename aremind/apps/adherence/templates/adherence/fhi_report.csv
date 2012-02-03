@@ -1,0 +1,12 @@
+Patients
+Date Enrolled,Subject Number,Mobile Number,Group(s)
+{% for p in patients %}"{{ p.date_enrolled }}",{{ p.subject_number }},{{ p.mobile_number }},"|{% for g in p.contact.groups.all %}{{ g.name }}|{% endfor %}"
+{% endfor %}
+
+
+Messaging Activity
+Date,Mobile Number,Direction,Text
+{% for m in messages %}"{{ m.date }}","{{ m.connection }}",{{ m.direction }},"{{ m.text }}"
+{% endfor %}
+
+
