@@ -82,7 +82,7 @@ INSTALLED_APPS = [
 # tabbed navigation. when adding an app to INSTALLED_APPS, you may wish
 # to add it here, also, to expose it in the rapidsms ui.
 RAPIDSMS_TABS = [
-    ("aremind.apps.broadcast.views.dashboard", "Dashboard"),    
+#    ("aremind.apps.broadcast.views.dashboard", "Dashboard"),    
     ("aremind.apps.broadcast.views.send_message", "Send a Message"),
     ("aremind.apps.adherence.views.dashboard", "Adherence"),
     ("aremind.apps.reminders.views.dashboard", "Appointments"),
@@ -91,7 +91,8 @@ RAPIDSMS_TABS = [
     ("aremind.apps.groups.views.list_groups", "Groups"),
     ("aremind.apps.groups.views.list_contacts","People"),
 #    ("settings", "Settings"),
-#    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
+    ("rapidsms.contrib.messagelog.views.message_log",       "Message Log"),
+    ("rosetta.views.list_languages",       "Translate"),
 
 #    ("rapidsms.contrib.messaging.views.messaging",          "Messaging"),
 #    ("rapidsms.contrib.locations.views.locations",          "Map"),

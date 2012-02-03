@@ -87,6 +87,7 @@
 {% endblock %}
 
 {% block content %}
+{% comment %}
     <div class="module">
     <form class="date-form buttons" action="{% url patient-list %}" method="get">
         <div class='form-action'>
@@ -95,13 +96,13 @@
         </div>
     </form>
 </div>
-
+{% endcomment %}
 
 
 
 
 <div class='module'>
-    <h2>Patient Stats</h2>
+    <h2>Patients</h2>
     <p><a class='button add' title='Add a New Patient' href="{% url patient-create %}" >Add a patient...</a></p>
     {% autosort patients %}
     <table class='sortable'>
@@ -109,11 +110,13 @@
             <tr>
                 <th>{% anchor subject_number "Subject ID" %}</th>
                 <th>{% anchor date_enrolled "Date Enrolled" %}</th>
+                {% comment %}
                 <th>{% anchor next_visit "Next Appointment" %}</th>
                 <th>{% anchor reminder_count "WisePill Activity (Last 20 Days)" %}</th>
                 <th>{% anchor feed_count "Missed Pill Count (SMS), 1 bar = 1 week" %}</th>
                 <th>{% anchor daily_doses "Daily Doses" %}</th>
                 <th>{% anchor adherence "Calculated Adherence" %}</th>
+                {% endcomment %}
                 <th>Actions</th>
             </tr>
         </thead>
@@ -122,11 +125,13 @@
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td><a href="detail/{{ patient.id }}/">{{ patient.subject_number }}</a></td>
                     <td>{{ patient.date_enrolled }}</td>
+                    {% comment %}
                     <td>{{ patient.next_visit }}</td>
                     <td class="wisepill_activity_patient_id">{{ patient.id }}</td>
                     <td class="missed_pill_patient_id">{{ patient.id }}</td>
                     <td>{{ patient.daily_doses }}</td>
                     <td>{{ patient.report_adherence }}%</td>
+                    {% endcomment %}
                     <td class='actions'>
                         <a class='button' title="Edit Patient Info" href='{% url patient-detail patient.pk %}'><span class='ui-icon ui-icon-pencil'></span></a>
                         <a class='button' title="Send One Time Reminder" href='{% url patient-onetime-message patient.pk %}'><span class='ui-icon ui-icon-mail-closed'></span></a>

@@ -76,36 +76,34 @@ class PatientPayloadUploadForm(forms.ModelForm):
 
 class PatientRemindersForm(forms.ModelForm):
 
-    first_name = forms.CharField(max_length=64, required=False)
-    last_name = forms.CharField(max_length=64, required=False)
-    reminders = AutoComboboxSelectMultipleField(ReminderLookup, label="Medicine Reminders", required=False)
-    feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
-    queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
+    #first_name = forms.CharField(max_length=64, required=False)
+    #last_name = forms.CharField(max_length=64, required=False)
+    #reminders = AutoComboboxSelectMultipleField(ReminderLookup, label="Medicine Reminders", required=False)
+    #feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
+    #queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
     language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
 
     class Meta(object):
         model = patients.Patient
-        fields = ('subject_number', 'first_name', 'last_name', 'mobile_number',
-                  'pin', 'next_visit', 'reminder_time', 'daily_doses',
-                  'wisepill_msisdn', 'manual_adherence')
+        fields = ('subject_number', 'mobile_number',)
 
     def __init__(self, *args, **kwargs):
         super(PatientRemindersForm, self).__init__(*args, **kwargs)
         self.fields['mobile_number'].widget = FancyPhoneInput()
-        self.fields['next_visit'].widget.attrs.update({'class': 'datepicker'})
-        self.fields['reminder_time'].widget.attrs.update({'class': 'timepicker'})
-        self.fields['reminder_time'].label = 'Appointment Reminder Time'
+        #self.fields['next_visit'].widget.attrs.update({'class': 'datepicker'})
+        #self.fields['reminder_time'].widget.attrs.update({'class': 'timepicker'})
+        #self.fields['reminder_time'].label = 'Appointment Reminder Time'
         if self.instance and self.instance.pk:
-            self.initial['reminders'] = self.instance.contact.reminders.all()
-            self.initial['feeds'] = self.instance.contact.feeds.all()
-            self.initial['first_name'] = self.instance.contact.first_name
-            self.initial['last_name'] = self.instance.contact.last_name
-            self.initial['queries'] = self.instance.adherence_query_schedules.all()
+            #self.initial['reminders'] = self.instance.contact.reminders.all()
+            #self.initial['feeds'] = self.instance.contact.feeds.all()
+            #self.initial['first_name'] = self.instance.contact.first_name
+            #self.initial['last_name'] = self.instance.contact.last_name
+            #self.initial['queries'] = self.instance.adherence_query_schedules.all()
             self.initial['language'] = self.instance.contact.language
         else:
             # Generate subject ID and pin
             self.initial['subject_number'] = self.generate_new_subject_id()
-            self.initial['pin'] = self.generate_new_pin()
+            #self.initial['pin'] = self.generate_new_pin()
 
     def clean_mobile_number(self):
         mobile_number = normalize_number(self.cleaned_data['mobile_number'])
@@ -145,11 +143,12 @@ class PatientRemindersForm(forms.ModelForm):
         if last_name:
             patient.contact.last_name = last_name
         patient.contact.phone = patient.mobile_number
-        patient.contact.pin = patient.pin
+        #patient.contact.pin = patient.pin
         patient.contact.language = self.cleaned_data.get('language')
         commit = kwargs.pop('commit', True)
         if commit:
             patient.contact.save()
+            """
             reminders = self.cleaned_data.get('reminders', []) or []
             patient.contact.reminders.clear()
             for r in reminders:
@@ -158,11 +157,14 @@ class PatientRemindersForm(forms.ModelForm):
             patient.contact.feeds.clear()
             for f in feeds:
                 f.subscribers.add(patient.contact)
+            """
             patient.save()
+            """
             queries = self.cleaned_data.get('queries', []) or []
             for q in queries:
                 q.patients.add(patient)
             patient.adherence_query_schedules.clear()
+            """
         return patient
 
 
