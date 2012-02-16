@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import pytz
 
 from django import http
 from django.conf import settings
@@ -13,9 +14,10 @@ from django.db.models import Count, Q, Sum
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from rapidsms.messages import OutgoingMessage
-from rapidsms.models import Connection
+from rapidsms.models import Connection, Backend
 import rapidsms.contrib.messagelog.models as messagelog
 from threadless_router.router import Router
 
@@ -31,6 +33,8 @@ from aremind.apps.reminders.forms import ReportForm, MonthReportForm
 
 from dimagi.utils.dates import get_day_of_month
 from rapidsms.contrib.messagelog.models import Message
+
+from tropo import Tropo
 
 _ = lambda s: s
 logger = logging.getLogger('aremind.apps.patients')
@@ -309,9 +313,8 @@ def messages_to_patient(request, patient_id):
     contact = patient.contact
     connections = Connection.objects.filter(contact=contact)
     messages = messagelog.Message.objects.filter(
-        Q(contact=patient.contact) | Q(connection__in=connections),
-        direction="O") \
-        .order_by('-date')
+        Q(contact=patient.contact) | Q(connection__in=connections)
+        ).order_by('-date')
     # note - can't call these 'messages' in the request context because
     # then our base template will try to render them as Django 'messages'
     context = dict(patient=patient, texts=messages)
@@ -602,3 +605,39 @@ def create_edit_pill_history(request, patient_id, pill_id=None):
         form = PillHistoryForm(instance=pill)
     context = {'patient': patient, 'pill': pill, 'form': form}
     return render(request, 'patients/create_edit_pill_history.html', context)
+
+@csrf_exempt
+def simple_callback(request):
+    country_code = settings.CALLBACK_COUNTRY_CODE
+    if request.method == "POST":
+        data = json.loads(request.raw_post_data)
+        caller_id = data["session"]["from"]["id"]
+        
+        # Add the country code if necessary
+        if caller_id[0] == "+":
+            caller_id = caller_id[1:]
+        if caller_id[0:len(country_code)] != country_code:
+            caller_id = country_code + caller_id
+        
+        # Log the call
+        backend, created = Backend.objects.get_or_create(name="tropo")
+        connection, created = Connection.objects.get_or_create(backend=backend,identity=caller_id)
+        m = Message.objects.create(
+            date=datetime.datetime.now(tz=pytz.utc)
+           ,direction="I"
+           ,text=""
+           ,message_type="CALL"
+           ,post_data = request.raw_post_data
+           ,connection=connection
+        )
+        m.save()
+        
+        # Respond with hangup
+        t = Tropo()
+        t.reject()
+        return HttpResponse(t.RenderJson())
+    else:
+        return HttpResponseBadRequest("Bad Request")
+
+
+

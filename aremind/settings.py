@@ -351,3 +351,7 @@ NO_LOGIN_REQUIRED_FOR = ["/tropo",
                          "/tropo/",
                          "/ajax/",
                          "/ajax",]
+
+CALLBACK_COUNTRY_CODE = "1"
+
+

@@ -11,6 +11,8 @@
     <table class='sortable pagination'>
         <thead>
             <tr>
+                <th>{% anchor message_type "Type" %}</th>
+                <th>{% anchor direction "Direction" %}</th>
                 <th>{% anchor date "Date" %}</th>
                 <th>{% anchor text "Text" %}</th>
             </tr>
@@ -18,6 +20,8 @@
         <tbody>
             {% for message in texts %}
                 <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ message.message_type }}</td>
+                    <td>{{ message.direction }}</td>
                     <td>{{ message.date }}</td>
                     <td>{{ message.text }}</td>
                 </tr>

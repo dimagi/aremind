@@ -16,5 +16,6 @@ urlpatterns = patterns('aremind.apps.patients.views',
     url(r'^$', 'list_patients', name='patient-list'),
     url(r'^detail/(?P<patient_id>\d+)/$', 'list_patient_stats_detail', name='patient-stats-detail'),
     url(r'^messagesto/(?P<patient_id>\d+)/$', 'messages_to_patient', name='messages-to-patient'),
+    url(r'^simple_callback/$', 'simple_callback', name='simple-callback')
 )
-    
+
