@@ -25,7 +25,7 @@ from fabric.contrib.project import rsync_project
 from fabric import utils
 from fabric.decorators import hosts
 import posixpath
-
+import datetime
 
 PROJECT_ROOT = os.path.dirname(__file__)
 RSYNC_EXCLUDE = (
@@ -50,6 +50,7 @@ def _setup_path():
     env.project_static = posixpath.join(env.project_root, 'static')
     env.virtualenv_root = posixpath.join(env.root, 'python_env')
     env.services = posixpath.join(env.home, 'services')
+    env.locale_backup = posixpath.join(env.home, "locale_backup", env.environment)
 
 def _set_apache_user():
     if what_os() == 'ubuntu':
@@ -210,6 +211,10 @@ def deploy():
     with settings(warn_only=True):
         stop()
     try:
+        # Backup current system translations
+        current_datetime = datetime.datetime.utcnow().strftime("%Y_%m_%d__%H_%M_%S")
+        sudo(('mkdir %(locale_backup)s/' + current_datetime) % env, user=env.sudo_user)
+        sudo(('cp -r %(code_root)s/aremind/locale %(locale_backup)s/' + current_datetime) % env, user=env.sudo_user)
         with cd(env.code_root):
             sudo('git checkout %(code_branch)s' % env, user=env.sudo_user)
             sudo('git pull', user=env.sudo_user)
