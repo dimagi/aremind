@@ -207,6 +207,7 @@ LANGUAGE_CODE = 'en'
 
 LANGUAGES = (
     ('en', 'English'),
+    ('id', 'Bahasa Indonesia'),
     ('jv', 'Javanese')
 )
 
