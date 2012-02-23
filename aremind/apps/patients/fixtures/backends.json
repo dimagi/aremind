@@ -1,0 +1,17 @@
+[
+    {
+        "pk": 1,
+        "model": "rapidsms.backend",
+        "fields": {
+            "name": "tropo"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "rapidsms.backend",
+        "fields": {
+            "name": "mach"
+        }
+    }
+]
+

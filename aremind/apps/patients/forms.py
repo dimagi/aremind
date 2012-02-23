@@ -18,6 +18,14 @@ from aremind.apps.patients import models as patients
 XML_DATE_FORMATS = ('%b  %d %Y ',)
 XML_TIME_FORMATS = ('%H:%M', )
 
+# These constants match the data in fixtures/backends.json
+BACKEND_TROPO_ID = 1
+BACKEND_MACH_ID = 2
+
+CARRIER_TELKOMSEL = "TELKOMSEL"
+CARRIER_OTHER = "OTHER"
+CARRIER_CHOICES = ((CARRIER_TELKOMSEL, "Telkomsel"), (CARRIER_OTHER, "Other"))
+
 class PatientForm(forms.ModelForm):
     # NB: This form is only used for importing patient data
     # The PatientRemindersForm is used in the UI
@@ -82,6 +90,7 @@ class PatientRemindersForm(forms.ModelForm):
     #feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
     #queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
     language = forms.ChoiceField(choices=getattr(settings, "LANGUAGES"), required=True)
+    carrier = forms.ChoiceField(choices=CARRIER_CHOICES)
 
     class Meta(object):
         model = patients.Patient
@@ -100,10 +109,18 @@ class PatientRemindersForm(forms.ModelForm):
             #self.initial['last_name'] = self.instance.contact.last_name
             #self.initial['queries'] = self.instance.adherence_query_schedules.all()
             self.initial['language'] = self.instance.contact.language
+            if self.instance.contact:
+                if self.instance.contact.primary_backend_id == BACKEND_TROPO_ID:
+                    self.initial["carrier"] = CARRIER_TELKOMSEL
+                else:
+                    self.initial["carrier"] = CARRIER_OTHER
+            else:
+                self.initial["carrier"] = CARRIER_OTHER
         else:
             # Generate subject ID and pin
             self.initial['subject_number'] = self.generate_new_subject_id()
             #self.initial['pin'] = self.generate_new_pin()
+            self.initial["carrier"] = CARRIER_OTHER
 
     def clean_mobile_number(self):
         mobile_number = normalize_number(self.cleaned_data['mobile_number'])
@@ -145,6 +162,11 @@ class PatientRemindersForm(forms.ModelForm):
         patient.contact.phone = patient.mobile_number
         #patient.contact.pin = patient.pin
         patient.contact.language = self.cleaned_data.get('language')
+        #
+        if self.cleaned_data.get("carrier") == CARRIER_TELKOMSEL:
+            patient.contact.primary_backend_id = BACKEND_TROPO_ID
+        else:
+            patient.contact.primary_backend_id = BACKEND_MACH_ID
         commit = kwargs.pop('commit', True)
         if commit:
             patient.contact.save()

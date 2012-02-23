@@ -49,6 +49,7 @@ urlpatterns = patterns('',
     url(r'^tropo/$', 'rtropo.views.message_received', name = 'tropo', kwargs = { 'backend_name': 'tropo'} ),
 
     (r'^couchlog/', include('couchlog.urls')),
+    (r'^http/', include('threadless_router.backends.http.urls')),
 )
 
  # Contrib Auth Password Management
