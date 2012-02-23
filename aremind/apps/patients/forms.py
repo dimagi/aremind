@@ -125,6 +125,9 @@ class PatientRemindersForm(forms.ModelForm):
     def clean_mobile_number(self):
         mobile_number = normalize_number(self.cleaned_data['mobile_number'])
         validate_phone(mobile_number)
+        # Add "+" to the mobile number
+        if mobile_number[0] != "+":
+            mobile_number = "+" + mobile_number
         # Validate uniqueness of mobile number
         if self.instance.contact_id:
             validate_unique_phone(mobile_number, self.instance.contact_id)
