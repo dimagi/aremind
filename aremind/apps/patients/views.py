@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 
 from rapidsms.messages import OutgoingMessage
-from rapidsms.models import Connection, Backend
+from rapidsms.models import Connection, Backend, Contact
 import rapidsms.contrib.messagelog.models as messagelog
 from threadless_router.router import Router
 
@@ -619,9 +619,18 @@ def simple_callback(request):
         if caller_id[0:len(country_code)] != country_code:
             caller_id = country_code + caller_id
         
+        # Add "+" sign
+        caller_id = "+" + caller_id
+        
         # Log the call
         backend, created = Backend.objects.get_or_create(name="tropo")
         connection, created = Connection.objects.get_or_create(backend=backend,identity=caller_id)
+        if created:
+            try:
+                connection.contact = Contact.objects.get(phone = caller_id)
+                connection.save()
+            except Exception:
+                pass
         m = Message.objects.create(
             date=datetime.datetime.now(tz=pytz.utc)
            ,direction="I"
