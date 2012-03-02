@@ -67,6 +67,8 @@ class Patient(models.Model):
     batterystrength = models.IntegerField(default=-1,
                                           help_text = "Last battery strength reported by patient's Wisepill device.  Below %d is considered low" % (1+WISEPILL_LOW_BATTERY))
 
+#    disabled = models.BooleanField(default=False, help_text="Check this option if you wish this patient to be disabled from the system")
+    disabled = models.BooleanField(default=False)
     def __unicode__(self):
         msg = u'Patient, Subject ID:{id}, Enrollment Date:{date_enrolled}'
         return msg.format(id=self.subject_number,

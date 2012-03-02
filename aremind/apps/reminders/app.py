@@ -169,7 +169,8 @@ class RemindersApp(AppBase):
             days_delta = datetime.timedelta(days=notification.num_days)
             appt_date = today + days_delta
             patients = Patient.objects.filter(next_visit=appt_date,
-                                                        contact__isnull=False,)
+                                                        contact__isnull=False,
+                                                        disabled=False)
             already_sent = Q(contact__sent_notifications__appt_date=appt_date) &\
                            Q(contact__sent_notifications__notification=notification)
             confirmed = Q(contact__sent_notifications__appt_date=appt_date) &\

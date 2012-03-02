@@ -217,6 +217,6 @@ def pills_missed_report(request):
 def wisepill_by_last_report(request):
     patients = Patient.objects.\
         annotate(last_report=Max('wisepill_messages__timestamp')).\
-        order_by('last_report')
+        order_by('last_report').exclude(disabled=True)
     context = { 'patients': patients }
     return render(request, 'adherence/wisepill_by_last_report.html', context)

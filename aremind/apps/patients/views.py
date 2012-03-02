@@ -73,6 +73,8 @@ def get_patient_stats_context(appt_date):
         reminder_count=Count('contact__reminders', distinct=True),
         feed_count=Count('contact__feeds', distinct=True),
         message_count=Count('wisepill_messages', distinct=True),
+    ).exclude(
+        disabled=True
     )
     for patient in patients_list:
         wpmessages = patient.wisepill_messages.all()

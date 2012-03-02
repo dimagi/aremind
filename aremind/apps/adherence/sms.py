@@ -82,7 +82,7 @@ def start_tree_for_patient(tree, patient):
 def start_tree_for_all_patients():
     logging.debug("start_tree_for_all_patients")
     tree = get_tree()
-    for patient in Patient.objects.all():
+    for patient in Patient.objects.filter(disabled=False):
         start_tree_for_patient(tree, patient)
 
 # When we complete an adherence survey, update adherence.pillsmissed
@@ -99,6 +99,8 @@ def session_end(sender, **kwargs):
     connection = session.connection
     try:
         patient = Patient.objects.get(contact = connection.contact)
+        if patient.disabled:
+            return #Skip patients that are disabled on the system
     except Patient.DoesNotExist:
         # No patient, this session might not be relevant to this app
         return

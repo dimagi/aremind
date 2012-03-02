@@ -113,7 +113,8 @@ class PatientManager(models.Manager):
     def confirmed_for_date(self, appt_date):
         return self.filter(
             contact__sent_notifications__appt_date=appt_date,
-            contact__sent_notifications__status__in=['confirmed', 'manual']
+            contact__sent_notifications__status__in=['confirmed', 'manual'],
+            disabled=False
         ).annotate(
             confirm_time=Max('contact__sent_notifications__date_confirmed')
         ).distinct()
@@ -121,7 +122,8 @@ class PatientManager(models.Manager):
     def unconfirmed_for_date(self, appt_date):
         return self.filter(
             ~Q(contact__sent_notifications__status__in=['confirmed', 'manual']),
-            contact__sent_notifications__appt_date=appt_date,        
+            contact__sent_notifications__appt_date=appt_date,
+            disabled=False
         ).annotate(
             last_reminder_time=Max('contact__sent_notifications__date_sent'),
             reminder_id=Max('contact__sent_notifications__id'),

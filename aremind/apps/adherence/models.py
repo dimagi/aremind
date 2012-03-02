@@ -507,6 +507,8 @@ class QuerySchedule(models.Model):
         if self.should_run(force):
             logger.debug("Starting query from schedule %s" % self)
             for patient in self.who_should_receive():
+                if patient.disabled:
+                    continue #SKIP PATIENTS THAT ARE DISABLED FROM THE SYSTEM
                 survey = PatientSurvey(patient=patient,
                                        query_type=self.query_type)
                 survey.start()

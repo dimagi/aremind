@@ -80,12 +80,13 @@ class PatientRemindersForm(forms.ModelForm):
     reminders = AutoComboboxSelectMultipleField(ReminderLookup, label="Medicine Reminders", required=False)
     feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
     queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
+    disabled = forms.CheckboxInput()
 
     class Meta(object):
         model = patients.Patient
         fields = ('subject_number', 'first_name', 'last_name', 'mobile_number',
                   'pin', 'next_visit', 'reminder_time', 'daily_doses',
-                  'wisepill_msisdn', 'manual_adherence')
+                  'wisepill_msisdn', 'manual_adherence', 'disabled')
 
     def __init__(self, *args, **kwargs):
         super(PatientRemindersForm, self).__init__(*args, **kwargs)

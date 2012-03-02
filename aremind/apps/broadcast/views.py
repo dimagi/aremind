@@ -146,7 +146,7 @@ def dashboard(request):
     # Identify patients whose wisepill devices' batteries' levels are low, but known
     context['low_battery_patients'] = Patient.objects.\
               filter(batterystrength__lte=WISEPILL_LOW_BATTERY).\
-              exclude(batterystrength=-1)
+              exclude(batterystrength=-1).exclude(disabled=True)
     # Graph data 
     return render_to_response('broadcast/dashboard.html', context,
                               RequestContext(request))
