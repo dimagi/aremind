@@ -31,52 +31,48 @@
                      primary: "ui-icon-pencil"
                  }
             }).click(function () {
-                location.href='{% url patient-detail patients.0.pk %}';
+                location.href='{% url patient-detail patient.pk %}';
             });
-
             $('#onetime_reminder').button({
                 icons: {
                     primary: "ui-icon-mail-closed"
                 }
             }).click(function () {
-                location.href='{% url patient-onetime-message patients.0.pk %}'
+                location.href='{% url patient-onetime-message patient.pk %}'
             });
-            
-            var isSinglePatient = (parseInt( {{ patients|length }} ) === 1);
 
-            if (isSinglePatient) {
-                var daily_dose = parseInt( {{ daily_doses }} );
-                var cells = $('.wisepill_day_count');
-                cells.each(function (idx) {
-                    var cell = $(this);
-                    var count = parseInt(cell.text());
-                    if(count > daily_dose) {
-                        cell.css('background-color', 'yellow');
-                    } else if (count === 0) {
-                        cell.css('background-color', '#FF9900');
-                    }
+            var daily_dose = parseInt( {{ daily_doses }} );
+            var cells = $('.wisepill_day_count');
+            cells.each(function (idx) {
+                var cell = $(this);
+                var count = parseInt(cell.text());
+                if(count > daily_dose) {
+                    cell.css('background-color', 'yellow');
+                } else if (count === 0) {
+                    cell.css('background-color', '#FF9900');
+                }
 
-                });
+            });
 
-                var cells = $('.weekly_count_value');
-                cells.each(function (d) {
-                    var cell = $(this);
-                    var text = cell.text();
-                    var count = parseInt(text);
-                    if (count && count > 0) {
-                        cell.css('background-color', 'yellow');
-                    } else if (text && text.toLowerCase().indexOf('no response') !== -1) {
-                        cell.css('background-color', '#FF9900');
-                    }
-                });
+            var cells = $('.weekly_count_value');
+            cells.each(function (d) {
+                var cell = $(this);
+                var text = cell.text();
+                var count = parseInt(text);
+                if (count && count > 0) {
+                    cell.css('background-color', 'yellow');
+                } else if (text && text.toLowerCase().indexOf('no response') !== -1) {
+                    cell.css('background-color', '#FF9900');
+                }
+            });
 //
-                $('#yellow_cell').css('background-color', 'yellow');
-                $('#red_cell').css('background-color', '#FF9900');
+            $('#yellow_cell').css('background-color', 'yellow');
+            $('#red_cell').css('background-color', '#FF9900');
 
-                var legend_table = $('#color-legend');
-                legend_table.find('th').css('border','1px solid #DDD');
-                legend_table.find('tbody').css('border', '1px solid #DDD');
-            }
+            var legend_table = $('#color-legend');
+            legend_table.find('th').css('border','1px solid #DDD');
+            legend_table.find('tbody').css('border', '1px solid #DDD');
+
         });
     </script>
 {% endblock %}
@@ -85,7 +81,7 @@
 
     {% block content %}
         <div class="module">
-            <h1>Detailed Usage for Patient: {{ patients.0.subject_number }}.</h1>
+            <h1>Detailed Usage for Patient: {{ patient.subject_number }}.</h1>
             <button id="edit_patient" title="Edit Patient Info">Edit Patient</button>
             <button id="onetime_reminder" title="Send One Time Reminder">Send One Time Reminder</button>
             <form class="date-form buttons" action="" method="get">
@@ -113,7 +109,7 @@
 
         </div>
         <div class="module">
-        <h2>Simple Adherence Score: {{ patients.0.adherence }}%</h2>
+        <h2>Simple Adherence Score: {{ patient.adherence }}%</h2>
         </div>
         <br />
         {{ block.super }}

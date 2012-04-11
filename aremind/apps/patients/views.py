@@ -137,82 +137,68 @@ def get_patient_stats_detail_context(report_date, patient_id):
     datetime_end_month = datetime.datetime(report_date.year,report_date.month,num_days_in_report_month,23,59)
     datetime_start_month = datetime.datetime(report_date.year, report_date.month,01,0,0)
 
-    if not patient_id:
-        return context #this method is for single patients only.
-    else:
-        patients = Patient.objects.filter(id=patient_id)
-        if(len(patients) > 0):
-            context["daily_doses"] = patients[0].daily_doses
+    patient = get_object_or_404(Patient, id=patient_id)
+    context["daily_doses"] = patient.daily_doses
 
-    context["patients"] = patients
+    context["patient"] = patient
     if not report_date:
         report_date = datetime.now()
 
     wp_usage_rows = []
     for day in range(1,days+1):
         row_date = datetime.date(report_date.year,report_date.month, day)
-        if is_patient_out_of_date_range(patients[0], row_date):
+        if is_patient_out_of_date_range(patient, row_date):
             continue
         
         row = []
         row.append(row_date)
-        for patient in patients:
-            msg_count = patient.wisepill_messages.filter(timestamp__year=row_date.year,timestamp__month=row_date.month,timestamp__day=row_date.day).count()
-            row.append(msg_count)
+        msg_count = patient.wisepill_messages.filter(timestamp__year=row_date.year,timestamp__month=row_date.month,timestamp__day=row_date.day).count()
+        row.append(msg_count)
         wp_usage_rows.append(row)
 
     pill_count_data = {}
     pills_missed_data = {}
-    for patient in patients:
-        pill_count_data["patient_id"] = patient.subject_number
-        pills_missed = patient.pillsmissed_set.filter(date__range=(datetime_start_month,datetime_end_month)).order_by('-date')[:4]
-        weeks = []
-        for pm in pills_missed:
-            week_start = pm.date-datetime.timedelta(days=7)
-            week_end = pm.date
-            num_missed = pm.num_missed
-            weeks.append({
-                'pills_missed': num_missed,
-                'week_start': week_start,
-                'week_end': week_end,
-                'received_on': pm.date
-            })
+    pill_count_data["patient_id"] = patient.subject_number
+    pills_missed = patient.pillsmissed_set.filter(date__range=(datetime_start_month,datetime_end_month)).order_by('-date')[:4]
+    weeks = []
+    for pm in pills_missed:
+        week_start = pm.date-datetime.timedelta(days=7)
+        week_end = pm.date
+        num_missed = pm.num_missed
+        weeks.append({
+            'pills_missed': num_missed,
+            'week_start': week_start,
+            'week_end': week_end,
+            'received_on': pm.date
+        })
 
-        pills_missed_data[patient] = weeks
+    pills_missed_data[patient] = weeks
 
-        pm_weekly_aggregate = []
-        num_weeks_in_report_month = num_days_in_report_month / 7
-        for week in range(0,num_weeks_in_report_month + 1):
-            week_start = (datetime.date(report_date.year,report_date.month,1) + datetime.timedelta(days=week*7))
-            week_end = week_start + datetime.timedelta(days=7)
-            pm_week_data = {}
-            if is_patient_out_of_date_range(patient,week_start,week_end):
-                continue
+    pm_weekly_aggregate = []
+    num_weeks_in_report_month = num_days_in_report_month / 7
+    for week in range(0,num_weeks_in_report_month + 1):
+        week_start = (datetime.date(report_date.year,report_date.month,1) + datetime.timedelta(days=week*7))
+        week_end = week_start + datetime.timedelta(days=7)
+        pm_week_data = {}
+        if is_patient_out_of_date_range(patient,week_start,week_end):
+            continue
 
-            pills_missed_set = patient.pillsmissed_set.filter(date__gt=week_start, date__lt=week_end, source=1) # source = 1 means SMS
-            if len(pills_missed_set) > 0:
-                pills_missed_week = pills_missed_set.aggregate(Sum('num_missed'))["num_missed__sum"]
-            else:
-                pills_missed_week = "No Response/No Query"
-
-
-            pm_week_data["sum"] = pills_missed_week
-            pm_week_data["week_start"] = week_start
-            pm_week_data["week_end"] = week_end
-            pm_weekly_aggregate.append(pm_week_data)
+        pills_missed_set = patient.pillsmissed_set.filter(date__gt=week_start, date__lt=week_end, source=1) # source = 1 means SMS
+        if len(pills_missed_set) > 0:
+            pills_missed_week = pills_missed_set.aggregate(Sum('num_missed'))["num_missed__sum"]
+        else:
+            pills_missed_week = "No Response/No Query"
 
 
+        pm_week_data["sum"] = pills_missed_week
+        pm_week_data["week_start"] = week_start
+        pm_week_data["week_end"] = week_end
+        pm_weekly_aggregate.append(pm_week_data)
 
-    # Get last 20 messages related to this patient
-    patient_contact = patients[0].contact
-    patient_connections = patient_contact.connection_set.all()
-    patient_connection = None
-    if len(patient_connections) > 0:
-        patient_connection = patient_connections[0]
-        print 'Patient Connection!: %s' % patient_connection
-        messages = Message.objects.filter(connection=patient_connection)
-    else:
-        messages = Message.objects.filter(contact=patient_contact)
+
+
+    patient_connections = patient.contact.connection_set.all()
+    messages = Message.objects.filter(connection__in=patient_connections)
 
     messages = messages.exclude(text__contains='start tree').exclude(text__contains='TimeOut') #exclude internal messages
     messages = messages.filter(date__range=(datetime_start_month, datetime_end_month)).order_by('-date') #stick to the report month
