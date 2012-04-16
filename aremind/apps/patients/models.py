@@ -47,7 +47,7 @@ class Patient(models.Model):
                                  related_name='patients')
     contact = models.ForeignKey(rapidsms.Contact, unique=True)
     subject_number = models.CharField(max_length=20, unique=True)
-    date_enrolled = models.DateField(default=datetime.date.today())
+    date_enrolled = models.DateField()
     mobile_number = models.CharField(max_length=30)
     pin = models.CharField(max_length=4, blank=True,
                            help_text="A 4-digit pin code for sms "
