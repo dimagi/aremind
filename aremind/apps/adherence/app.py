@@ -44,7 +44,7 @@ class AdherenceApp(AppBase):
     def send_messages(self):
         """ send queued for delivery messages """
 
-        messages = SendReminder.objects.filter(status='queued')[:50]
+        messages = SendReminder.objects.filter(status='queued')[:20]
         self.info('found {0} reminder(s) to send'.format(messages.count()))
         for message in messages:
             connection = message.recipient.default_connection

@@ -113,7 +113,7 @@ class BroadcastApp(AppBase):
 
     def send_messages(self):
         """ send queued for delivery messages """
-        messages = BroadcastMessage.objects.filter(status='queued')[:50]
+        messages = BroadcastMessage.objects.filter(status='queued')[:20]
         self.info('found {0} message(s) to send'.format(messages.count()))
         for message in messages:
             connection = message.recipient.default_connection
