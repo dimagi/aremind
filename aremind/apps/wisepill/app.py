@@ -20,7 +20,7 @@ class WisepillApp(AppBase):
             self.debug("does not look like a wisepill message, returning")
             return False
 
-        self.debug("got a wisepill message: %s" % msg.text)
+        self.info("got a wisepill message: %s" % msg.text)
         wisepill_message = WisepillMessage(sms_message = msg.text)
         wisepill_message.save()
         return True # handled

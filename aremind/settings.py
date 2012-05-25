@@ -239,7 +239,7 @@ PRIMARY_BACKEND = 'tropo'
 # if set, the message tester app will always use this backend
 TEST_MESSAGER_BACKEND = 'tropo'
 
-RAPIDSMS_HANDLERS_EXCLUDE_APPS = ["couchlog","djcelery"]
+RAPIDSMS_HANDLERS_EXCLUDE_APPS = ["couchlog","djcelery", "djcelery.app"]
 
 STATICFILES_FINDERS =(
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -327,6 +327,7 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 
+DECISIONTREE_TIMEOUT = 14400 # 14400 seconds = 4 hours
 # Store the schedule in the Django database
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
