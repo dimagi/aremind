@@ -74,6 +74,7 @@ def get_patient_stats_context(appt_date):
         feed_count=Count('contact__feeds', distinct=True),
         message_count=Count('wisepill_messages', distinct=True),
     )
+    pmSparklineWeeks = []
     for patient in patients_list:
         wpmessages = patient.wisepill_messages.all()
         wpsparkline = []
@@ -87,7 +88,6 @@ def get_patient_stats_context(appt_date):
         patient.wisepill_sparkline = wpsparkline
 
         pmSparkline = []
-        pmSparklineWeeks = []
         isWeeksFilled = False
         dateEndWeek = appt_date
         dateStartWeek = appt_date - datetime.timedelta(days=7)
