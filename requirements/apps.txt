@@ -24,7 +24,7 @@ django-selectable==0.5.0
 -e git+https://github.com/dimagi/rapidsms.git#egg=rapidsms
 -e git+https://github.com/adammck/djtables#egg=djtables
 couchdbkit==0.5.4
-pytz
+pytz==2012c
 -e git+https://github.com/dimagi/couchlog.git#egg=couchlog
 -e git+https://github.com/dimagi/auditcare.git#egg=auditcare
 -e git+https://github.com/dimagi/dimagi-utils.git#egg=dimagi_utils
