@@ -15,7 +15,7 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
     (r'^', include('decisiontree.urls')),
-    (r'^', include('auditcare.urls')),
+#    (r'^', include('auditcare.urls')),
 
     # RapidSMS core URLs
     (r'^account/', include('rapidsms.urls.login_logout')),
@@ -48,7 +48,7 @@ urlpatterns = patterns('',
 
     url(r'^tropo/$', 'rtropo.views.message_received', name = 'tropo', kwargs = { 'backend_name': 'tropo'} ),
 
-    (r'^couchlog/', include('couchlog.urls')),
+#    (r'^couchlog/', include('couchlog.urls')),
 )
 
  # Contrib Auth Password Management
@@ -62,6 +62,15 @@ urlpatterns += patterns('django.contrib.auth.views',
     url(r'^account/password/reset/done/$', 'password_reset_done', name='auth_password_reset_done'),
 )
 
+if 'auditcare' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        (r'^', include('auditcare.urls')),
+    )
+
+if 'couchlog' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        (r'^couchlog/', include('couchlog.urls')),
+    )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
@@ -84,3 +93,4 @@ if settings.DEBUG:
         (r'^httptester/', include('threadless_router.backends.httptester.urls')),
         # ...
     )
+
