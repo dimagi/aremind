@@ -5,7 +5,7 @@ from django import forms
 from django.forms.models import modelformset_factory
 
 from rapidsms.models import Contact
-from selectable.forms import AutoComboboxSelectMultipleField
+from selectable.forms import AutoCompleteSelectMultipleField, AutoComboboxSelectMultipleWidget
 
 from aremind.apps.adherence.lookups import ReminderLookup, FeedLookup, QueryLookup
 from aremind.apps.groups.forms import FancyPhoneInput
@@ -77,9 +77,18 @@ class PatientRemindersForm(forms.ModelForm):
 
     first_name = forms.CharField(max_length=64, required=False)
     last_name = forms.CharField(max_length=64, required=False)
-    reminders = AutoComboboxSelectMultipleField(ReminderLookup, label="Medicine Reminders", required=False)
-    feeds = AutoComboboxSelectMultipleField(FeedLookup, required=False)
-    queries = AutoComboboxSelectMultipleField(QueryLookup, required=False)
+    reminders = AutoCompleteSelectMultipleField(
+        ReminderLookup, label="Medicine Reminders", required=False,
+        widget=AutoComboboxSelectMultipleWidget
+    )
+    feeds = AutoCompleteSelectMultipleField(
+        FeedLookup, required=False,
+        widget=AutoComboboxSelectMultipleWidget
+    )
+    queries = AutoCompleteSelectMultipleField(
+        QueryLookup, required=False,
+        widget=AutoComboboxSelectMultipleWidget
+    )
 
     class Meta(object):
         model = patients.Patient
