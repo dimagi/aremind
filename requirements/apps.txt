@@ -13,8 +13,8 @@ django-celery==2.2.4
 celery==2.2.7
 python-twitter==0.8.2
 feedparser==5.0.1
-gevent==0.13.6
-greenlet==0.3.1
+gevent==0.13.7
+greenlet==0.3.4
 distribute>=0.6.19
 nose==1.0
 django-selectable==0.5.0
