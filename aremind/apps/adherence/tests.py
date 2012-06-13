@@ -2,20 +2,23 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.test.client import RequestFactory
+from django.test.testcases import TestCase
+from django.utils import simplejson as json
 
 from rapidsms.messages.incoming import IncomingMessage
 from rapidsms.models import Connection, Contact, Backend
 from rapidsms.tests.harness import MockRouter
 from decisiontree.app import App as DecisionApp
 
+from aremind.apps.adherence.forms import FeedForm
+from aremind.apps.adherence.lookups import ReminderLookup, FeedLookup
 from aremind.apps.adherence.models import (Reminder, Feed, Entry,
                                            QuerySchedule, PatientSurvey)
 from aremind.apps.adherence.types import QUERY_TYPE_SMS
 from aremind.apps.adherence.sms import get_tree
 from aremind.apps.patients.tests import PatientsCreateDataTest
 from aremind.apps.wisepill.models import WisepillMessage
-from django.test.testcases import TestCase
-from aremind.apps.adherence.forms import FeedForm
 
 
 __all__ = (
@@ -27,6 +30,8 @@ __all__ = (
     'DeleteReminderViewTest',
     'QueryScheduleTest',
     'WisepillByLastReportTest',
+    'ReminderLookupTest',
+    'FeedLookupTest',
 )
 
 
@@ -587,3 +592,67 @@ class TreeTest(PatientsCreateDataTest):
         print "len(responses)=%d" % len(msg.responses)
         rsp = msg.responses[0].text
         self.assertTrue(rsp.startswith("Thank you. Your adherence is"))
+
+
+class LookupTestMixin(object):
+    "Mixin for testing django-selectable lookups."
+
+    lookup_class = None
+
+    def get_query(self, term):
+        factory = RequestFactory()
+        request = factory.get(self.lookup_class.url(), {'term': term})
+        lookup = self.lookup_class()
+        return json.loads(lookup.results(request).content)
+
+    def assertInResults(self, item, results):
+        self.assertTrue(any([item.pk == r['id'] for r in results]))
+
+    def assertNotInResults(self, item, results):
+        self.assertFalse(any([item.pk == r['id'] for r in results]))
+
+
+class ReminderLookupTest(LookupTestMixin, AdherenceCreateDataTest):
+    "Regression test for using Reminder lookup for django-selectable."
+
+    lookup_class = ReminderLookup
+
+    def setUp(self):
+        self.test_reminder = self.create_reminder(data={'frequency': Reminder.REPEAT_DAILY})
+        self.other_reminder = self.create_reminder(data={
+            'frequency': Reminder.REPEAT_WEEKLY, 'weekdays': '1,2'
+        })
+
+    def test_search_by_frequency(self):
+        "Find reminders by frequency."
+        results = self.get_query(term=Reminder.REPEAT_DAILY)
+        self.assertInResults(self.test_reminder, results)
+        self.assertNotInResults(self.other_reminder, results)
+
+    def test_search_all(self):
+        "Search for all reminders."
+        results = self.get_query(term='')
+        self.assertInResults(self.test_reminder, results)
+        self.assertInResults(self.other_reminder, results)
+
+
+class FeedLookupTest(LookupTestMixin, AdherenceCreateDataTest):
+    "Regression test for using Feed lookup for django-selectable."
+
+    lookup_class = FeedLookup
+
+    def setUp(self):
+        self.test_feed = self.create_feed(data={'name': 'Test'})
+        self.other_feed = self.create_feed(data={'name': 'Other'})
+
+    def test_search_by_name(self):
+        "Find feeds by name."
+        results = self.get_query(term='Test')
+        self.assertInResults(self.test_feed, results)
+        self.assertNotInResults(self.other_feed, results)
+
+    def test_search_all(self):
+        "Search for all feeds."
+        results = self.get_query(term='')
+        self.assertInResults(self.test_feed, results)
+        self.assertInResults(self.other_feed, results)
