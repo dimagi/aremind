@@ -6,7 +6,7 @@ from aremind.apps.adherence.models import Reminder, Feed, QuerySchedule
 
 class ReminderLookup(ModelLookup):
     model = Reminder
-    search_fields = ('frequency__icontatins', )
+    search_fields = ('frequency__icontains', )
 
 
 registry.register(ReminderLookup)
@@ -14,7 +14,7 @@ registry.register(ReminderLookup)
 
 class FeedLookup(ModelLookup):
     model = Feed
-    search_fields = ('name__icontatins', )
+    search_fields = ('name__icontains', )
 
 
 registry.register(FeedLookup)
