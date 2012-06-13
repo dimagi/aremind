@@ -82,3 +82,13 @@ BROKER_PORT = 5672
 BROKER_VHOST = "aremind_staging"
 BROKER_USER = "aremind"
 BROKER_PASSWORD = "" # In local settings
+
+
+# Disable audit logging while running locally
+INSTALLED_APPS.remove('auditcare')
+INSTALLED_APPS.remove('couchlog')
+MIDDLEWARE_CLASSES.remove('auditcare.middleware.AuditMiddleware')
+AUDIT_DJANGO_USER = False
+AUDIT_ALL_VIEWS = False
+AUDIT_VIEWS = []
+AUDIT_MODEL_SAVE = []

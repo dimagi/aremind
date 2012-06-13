@@ -42,3 +42,12 @@ ADMINS = (
     ('Development Team', 'aremind-dev@dimagi.com'),
 )
 MANAGERS = ADMINS
+
+# Disable audit logging while running the test suite
+INSTALLED_APPS.remove('auditcare')
+INSTALLED_APPS.remove('couchlog')
+MIDDLEWARE_CLASSES.remove('auditcare.middleware.AuditMiddleware')
+AUDIT_DJANGO_USER = False
+AUDIT_ALL_VIEWS = False
+AUDIT_VIEWS = []
+AUDIT_MODEL_SAVE = []
