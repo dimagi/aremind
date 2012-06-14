@@ -289,30 +289,73 @@ class ImportTest(PatientsCreateDataTest):
         self.assertFalse(patient.reminder_time)
 
 
-    def test_patient_reminders_form(self):
-        contact = self.create_contact()
-        today = datetime.date.today()
-        reminder = Reminder.objects.create(time_of_day = '0:00',
-                                           date = today)
-        feed = Feed.objects.create(name='test feed')
-        query = QuerySchedule.objects.create(start_date=today,
-                              time_of_day='0:00',
-                              query_type=1,
-                              days_between=4)
-        data = { 'contact': contact,
-                'subject_number': 'foo',
-                'mobile_number': '999555121212',
-                'daily_doses': '1',
-                'reminders_1': str(reminder.pk),
-                'feeds_1': str(feed.pk),
-                'queries_1': str(query.pk),
-                'manual_adherence': 80,
-                }
+class PatientRemindersFormTest(PatientsCreateDataTest):
+    "Form to create/upate patient reminder data."
+
+    def get_minimal_data(self):
+        "Return minimal valid data for the form."
+        return {
+            'subject_number': 'XXXX',
+            'mobile_number': '999555121212',
+            'daily_doses': '1',
+        }
+
+    def test_basic_create(self):
+        "Minimal patient reminder data creation."
+        data = self.get_minimal_data()
         form = PatientRemindersForm(data)
-        if form.is_valid():
-            form.save()
-        else:
-            self.fail("Form did not validate: %r" % form.errors)
+        self.assertTrue(form.is_valid(), str(form.errors))
+        patient = form.save()
+        self.assertEqual(patient.subject_number, 'XXXX')
+        # Contact should be created with the same subject number
+        self.assertEqual(patient.contact.name, 'XXXX')
+
+    def test_basic_update(self):
+        "Minimal patient reminder data update."
+        patient = self.create_patient()
+        data = self.get_minimal_data()
+        form = PatientRemindersForm(data, instance=patient)
+        self.assertTrue(form.is_valid(), str(form.errors))
+        patient = form.save()
+        self.assertEqual(patient.subject_number, 'XXXX')
+        # Contact should be updated with the same subject number
+        self.assertEqual(patient.contact.name, 'XXXX')
+
+    def test_with_reminders(self):
+        "Save patient with reminders."
+        today = datetime.date.today()
+        reminder = Reminder.objects.create(time_of_day='0:00', date=today)
+        data = self.get_minimal_data()
+        data['reminders_1'] = [reminder.pk, ]
+        form = PatientRemindersForm(data)
+        self.assertTrue(form.is_valid(), str(form.errors))
+        patient = form.save()
+        self.assertEqual(patient.contact.reminders.all().count(), 1)
+
+    def test_with_feeds(self):
+        "Save patient with feeds."
+        feed = Feed.objects.create(name='test feed')
+        data = self.get_minimal_data()
+        data['feeds_1'] = [feed.pk, ]
+        form = PatientRemindersForm(data)
+        self.assertTrue(form.is_valid(), str(form.errors))
+        patient = form.save()
+        self.assertEqual(patient.contact.feeds.all().count(), 1)
+
+    def test_with_queries(self):
+        "Save patient with query schedules."
+        today = datetime.date.today()
+        query = QuerySchedule.objects.create(
+            start_date=today, time_of_day='0:00',
+            query_type=1, days_between=4
+        )
+        data = self.get_minimal_data()
+        data['queries_1'] = [query.pk, ]
+        form = PatientRemindersForm(data)
+        self.assertTrue(form.is_valid(), str(form.errors))
+        patient = form.save()
+        self.assertEqual(patient.adherence_query_schedules.all().count(), 1)
+
 
 class WisepillAdherenceTest(PatientsCreateDataTest):
 
