@@ -82,6 +82,19 @@ def staging():
     env.db = '%s_%s' % (env.project, env.environment)
     _setup_path()
 
+def rackspace():
+    """ use production environment on remote host"""
+    env.code_branch = 'master'
+    env.sudo_user = 'aremind'
+    env.environment = 'rackspace'
+    env.server_port = '9010'
+    env.server_name = 'aremind-rackspace'
+    env.hosts = ['10.181.99.128']
+    env.settings = '%(project)s.localsettings' % env
+    env.remote_os = None # e.g. 'ubuntu' or 'redhat'.  Gets autopopulated by what_os() if you don't know what it is or don't want to specify.
+    env.db = '%s_%s' % (env.project, env.environment)
+    _setup_path()
+
 def production():
     """ use production environment on remote host"""
     env.code_branch = 'master'
