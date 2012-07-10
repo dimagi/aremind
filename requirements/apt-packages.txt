@@ -10,7 +10,6 @@ libpq-dev
 libxslt1-dev
 libxml2-dev
 apache2
-supervisor
 git-core
 subversion
 mercurial
