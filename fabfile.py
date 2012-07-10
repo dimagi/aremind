@@ -84,7 +84,7 @@ def staging():
 
 def rackspace():
     """ use production environment on remote host"""
-    env.code_branch = 'master'
+    env.code_branch = 'feature/rackspace'
     env.sudo_user = 'aremind'
     env.environment = 'production'
     env.server_port = '9010'
